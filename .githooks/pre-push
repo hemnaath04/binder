@@ -1,0 +1,35 @@
+#!/bin/sh
+# Block direct pushes to main. Work on dev, then open a pull request.
+#
+# This is a local guard. GitHub rulesets and classic branch protection both
+# require GitHub Pro on private repositories, and this account is on the free
+# plan, so the rule cannot be enforced server-side yet. Activate GitHub Pro
+# through the Student Developer Pack (https://education.github.com/pack) and
+# then create the ruleset; see CONTRIBUTING.md.
+#
+# Enabled by: git config core.hooksPath .githooks
+
+protected="main"
+
+while read -r _local_ref _local_sha remote_ref _remote_sha; do
+	case "$remote_ref" in
+	"refs/heads/$protected")
+		cat >&2 <<-MSG
+
+		  Blocked: direct push to '$protected'.
+
+		  Push to dev and open a pull request instead:
+
+		      git switch dev
+		      git push -u origin dev
+		      gh pr create --base main --head dev
+
+		  To override deliberately: git push --no-verify
+
+		MSG
+		exit 1
+		;;
+	esac
+done
+
+exit 0
