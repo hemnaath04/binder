@@ -1,0 +1,52 @@
+/* Wellspring Rx: retail pharmacy software. Warm, receipt-like, list-dense,
+   third distinct visual identity so the fragmentation reads at a glance. */
+:root {
+  color-scheme: light;
+  --brand: #b4531b;
+  --accent: #fdf1e7;
+  --ink: #221a14;
+  --muted: #6d6058;
+  --line: #e4d5c8;
+  --bg: #faf6f2;
+  --panel: #fff;
+  --warn: #a8321f;
+  font-family: ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-size: 14px; line-height: 1.5; }
+.masthead { background: var(--brand); color: #fff; padding: 12px 20px; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.masthead b { font-size: 17px; letter-spacing: -0.01em; }
+.masthead span { font-size: 12px; opacity: 0.9; }
+.masthead .spacer { flex: 1; }
+.strip { background: var(--accent); border-bottom: 1px solid var(--line); padding: 9px 20px; font-size: 12px; color: var(--muted); }
+.strip b { color: var(--ink); }
+nav { background: var(--panel); border-bottom: 1px solid var(--line); display: flex; gap: 0; overflow-x: auto; padding: 0 12px; }
+nav button { font: inherit; font-size: 13px; border: 0; background: transparent; padding: 11px 16px; cursor: pointer; color: var(--muted); border-bottom: 3px solid transparent; white-space: nowrap; }
+nav button:hover { color: var(--ink); background: var(--accent); }
+nav button[aria-selected="true"] { color: var(--brand); border-bottom-color: var(--brand); font-weight: 600; }
+nav button:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
+main { max-width: 880px; margin: 0 auto; padding: 18px 20px; }
+h2 { font-size: 13px; margin: 0 0 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.rx { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; margin-bottom: 8px; display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; align-items: start; }
+.rx h3 { margin: 0; font-size: 15px; }
+.rx .meta { color: var(--muted); font-size: 12px; grid-column: 1 / -1; }
+.rx .refills { text-align: right; font-size: 12px; color: var(--muted); }
+.rx .refills b { display: block; font-size: 18px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.rx.none .refills b { color: var(--warn); }
+.rxno { font-family: ui-monospace, SFMono-Regular, monospace; font-size: 11px; color: var(--muted); }
+.receipt { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.receipt table { border-collapse: collapse; width: 100%; }
+.receipt th, .receipt td { text-align: left; padding: 9px 16px; border-bottom: 1px dashed var(--line); }
+.receipt th { background: var(--accent); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+.receipt tbody tr:last-child td { border-bottom: 0; }
+.receipt td.qty { text-align: right; font-variant-numeric: tabular-nums; }
+.alert { border: 1px solid var(--line); border-left: 4px solid #c9a227; background: #fffbef; border-radius: 8px; padding: 12px 16px; margin-bottom: 8px; }
+.alert h3 { margin: 0 0 3px; font-size: 14px; }
+.alert .sev { display: inline-block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; padding: 2px 7px; border-radius: 999px; background: #f2e7c4; color: #6b571a; margin-bottom: 6px; }
+.alert p { margin: 0; color: #4a4038; max-width: 72ch; font-size: 13px; }
+.note { background: var(--accent); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: var(--muted); margin-top: 10px; }
+.empty { color: var(--muted); font-style: italic; }
+footer { max-width: 880px; margin: 0 auto; padding: 0 20px 32px; color: var(--muted); font-size: 12px; }
+footer strong { color: var(--warn); }
+[hidden] { display: none !important; }
+@media (max-width: 560px) { .rx { grid-template-columns: 1fr; } .rx .refills { text-align: left; } }

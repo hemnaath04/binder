@@ -1,0 +1,53 @@
+/* St. Albans Patient Hub: the newest of the three portals. Cards, teal, more
+   whitespace. Different enough from NorthfieldConnect that a viewer instantly
+   reads them as two unrelated vendors, which is the point. */
+:root {
+  color-scheme: light;
+  --brand: #0f6b63;
+  --accent: #eaf5f3;
+  --ink: #17211f;
+  --muted: #5f6d6a;
+  --line: #d5e2df;
+  --bg: #f7faf9;
+  --panel: #fff;
+  --high: #a8321f;
+  --low: #8a5a10;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-size: 14px; line-height: 1.5; }
+.masthead { background: var(--panel); border-bottom: 1px solid var(--line); padding: 14px 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.mark { width: 26px; height: 26px; border-radius: 7px; background: var(--brand); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+.masthead b { font-size: 15px; }
+.masthead .sub { color: var(--muted); font-size: 12px; }
+.masthead .spacer { flex: 1; }
+.patientcard { max-width: 900px; margin: 20px auto 0; padding: 0 20px; }
+.patientcard .inner { background: var(--accent); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; display: flex; gap: 26px; flex-wrap: wrap; }
+.patientcard dfn { font-style: normal; display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+.patientcard b { font-size: 15px; }
+nav { max-width: 900px; margin: 18px auto 0; padding: 0 20px; display: flex; gap: 6px; overflow-x: auto; }
+nav button { font: inherit; font-size: 13px; border: 1px solid var(--line); background: var(--panel); padding: 7px 14px; border-radius: 999px; cursor: pointer; color: var(--muted); white-space: nowrap; }
+nav button:hover { border-color: var(--brand); color: var(--ink); }
+nav button[aria-selected="true"] { background: var(--brand); border-color: var(--brand); color: #fff; font-weight: 600; }
+nav button:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+main { max-width: 900px; margin: 0 auto; padding: 18px 20px; }
+h2 { font-size: 13px; margin: 0 0 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; }
+.card h3 { margin: 0 0 2px; font-size: 15px; }
+.card .meta { color: var(--muted); font-size: 12px; }
+.tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px; background: var(--accent); color: var(--brand); border: 1px solid var(--line); }
+.note { background: #fdf7e8; border: 1px solid #e8d9a8; border-radius: 10px; padding: 10px 14px; font-size: 13px; color: #5a4a1c; margin-top: 4px; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 8px 0; border-bottom: 1px solid #eaf0ef; }
+th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); font-weight: 600; }
+tbody tr:last-child td { border-bottom: 0; }
+.val.high { color: var(--high); font-weight: 700; }
+.val.low { color: var(--low); font-weight: 700; }
+.trend { display: flex; gap: 4px; align-items: flex-end; height: 34px; margin-top: 6px; }
+.trend i { display: block; width: 16px; background: var(--brand); border-radius: 2px 2px 0 0; opacity: 0.75; }
+.msg p { margin: 6px 0 0; max-width: 70ch; color: #29352f; }
+.empty { color: var(--muted); font-style: italic; }
+footer { max-width: 900px; margin: 0 auto; padding: 0 20px 32px; color: var(--muted); font-size: 12px; }
+footer strong { color: var(--high); }
+[hidden] { display: none !important; }
+@media (max-width: 620px) { main, nav, .patientcard { padding-inline: 12px; } }

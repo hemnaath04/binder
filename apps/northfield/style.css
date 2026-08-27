@@ -1,0 +1,55 @@
+/* NorthfieldConnect: the older of the three portals. Dense tables, tab strip,
+   institutional blue. Deliberately unfashionable, because real portals are. */
+:root {
+  color-scheme: light;
+  --brand: #1b4a7a;
+  --brand-dark: #12395e;
+  --ink: #1c2126;
+  --muted: #5d6874;
+  --line: #c9d2dc;
+  --bg: #eef2f6;
+  --panel: #fff;
+  --flag: #a8321f;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-size: 13px; line-height: 1.45; }
+a { color: var(--brand); }
+.masthead { background: var(--brand); color: #fff; padding: 10px 18px; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.masthead b { font-size: 16px; letter-spacing: -0.01em; }
+.masthead span { font-size: 11px; opacity: 0.85; }
+.masthead .spacer { flex: 1; }
+.patientbar { background: #dfe7ef; border-bottom: 1px solid var(--line); padding: 7px 18px; display: flex; gap: 22px; flex-wrap: wrap; font-size: 12px; }
+.patientbar b { font-size: 13px; }
+.patientbar dfn { font-style: normal; color: var(--muted); }
+nav { background: var(--panel); border-bottom: 1px solid var(--line); padding: 0 12px; display: flex; gap: 2px; overflow-x: auto; }
+nav button { font: inherit; font-size: 12px; border: 0; background: transparent; padding: 9px 14px; cursor: pointer; color: var(--muted); border-bottom: 3px solid transparent; white-space: nowrap; }
+nav button:hover { color: var(--ink); background: #f4f7fa; }
+nav button[aria-selected="true"] { color: var(--brand); border-bottom-color: var(--brand); font-weight: 600; }
+nav button:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
+main { max-width: 940px; margin: 0 auto; padding: 18px; }
+h2 { font-size: 14px; margin: 0 0 10px; color: var(--brand); border-bottom: 1px solid var(--line); padding-bottom: 5px; }
+h3 { font-size: 12px; margin: 0 0 4px; }
+.panel { background: var(--panel); border: 1px solid var(--line); margin-bottom: 16px; }
+.panel > .body { padding: 12px 14px; }
+table { border-collapse: collapse; width: 100%; }
+caption { text-align: left; padding: 10px 14px 6px; font-weight: 600; font-size: 12px; color: var(--muted); }
+th, td { text-align: left; padding: 7px 14px; border-bottom: 1px solid #e4e9ee; vertical-align: top; }
+th { background: #f2f5f8; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr:hover { background: #f7fafc; }
+.sig { color: var(--muted); font-size: 12px; }
+.pill { display: inline-block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; padding: 1px 6px; border-radius: 3px; background: #e3ebf2; color: var(--brand); border: 1px solid #cdd9e4; }
+.flag { color: var(--flag); font-weight: 600; }
+.note { background: #fdf6e3; border-left: 3px solid #d9b23a; padding: 8px 12px; margin-top: 8px; font-size: 12px; }
+.msg { border-bottom: 1px solid #e4e9ee; padding: 12px 14px; }
+.msg:last-child { border-bottom: 0; }
+.msg header { display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; margin-bottom: 4px; }
+.msg header b { font-size: 13px; }
+.msg header time { color: var(--muted); font-size: 11px; }
+.msg p { margin: 0; color: #2c343c; max-width: 72ch; }
+.empty { color: var(--muted); padding: 14px; font-style: italic; }
+footer { max-width: 940px; margin: 0 auto; padding: 0 18px 32px; color: var(--muted); font-size: 11px; }
+footer strong { color: var(--flag); }
+[hidden] { display: none !important; }
+@media (max-width: 620px) { th, td { padding: 6px 10px; } main { padding: 12px; } }

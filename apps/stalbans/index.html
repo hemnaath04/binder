@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>St. Albans Patient Hub | St. Albans Kidney Care</title>
+<meta name="description" content="Fictional patient portal built for a WebMCP demonstration. All data is fabricated.">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<header class="masthead">
+  <div class="mark" aria-hidden="true">SA</div>
+  <div>
+    <b>St. Albans Patient Hub</b>
+    <div class="sub">St. Albans Kidney Care</div>
+  </div>
+  <span class="spacer"></span>
+  <span class="sub" id="signed-in">Signed in</span>
+</header>
+
+<div class="patientcard">
+  <div class="inner">
+    <div><dfn>Patient</dfn><b id="p-name">&mdash;</b></div>
+    <div><dfn>Date of birth</dfn><b id="p-dob">&mdash;</b></div>
+    <div><dfn>Record</dfn><b id="p-mrn">&mdash;</b></div>
+    <div><dfn>Nephrologist</dfn><b id="p-doc">&mdash;</b></div>
+    <div><dfn>Status</dfn><b id="p-stage">&mdash;</b></div>
+  </div>
+</div>
+
+<nav aria-label="Sections">
+  <button type="button" data-tab="labs" aria-selected="true">Kidney results</button>
+  <button type="button" data-tab="medications" aria-selected="false">Medications</button>
+  <button type="button" data-tab="appointments" aria-selected="false">Visits</button>
+  <button type="button" data-tab="messages" aria-selected="false">Messages</button>
+</nav>
+
+<main>
+  <section id="tab-labs">
+    <h2>Kidney function over time</h2>
+    <div class="card" id="trend-card"></div>
+    <h2>All results</h2>
+    <div id="lab-cards"></div>
+    <p class="note">
+      These results were ordered by St. Albans Kidney Care. Other practices
+      caring for this patient do not receive them automatically.
+    </p>
+  </section>
+
+  <section id="tab-medications" hidden>
+    <h2>Medications from this practice</h2>
+    <div id="med-cards"></div>
+    <p class="note">
+      Only medications prescribed by St. Albans Kidney Care appear here.
+      Prescriptions written elsewhere are not visible to this office.
+    </p>
+  </section>
+
+  <section id="tab-appointments" hidden>
+    <h2>Upcoming visits</h2>
+    <div id="appt-cards"></div>
+  </section>
+
+  <section id="tab-messages" hidden>
+    <h2>Messages from your care team</h2>
+    <div id="msg-cards"></div>
+  </section>
+</main>
+
+<footer>
+  <p>
+    <strong>Fictional portal.</strong> St. Albans Kidney Care does not exist and every
+    record here is fabricated. Built as one of three independent origins for a WebMCP
+    demonstration. See the project DISCLAIMER.
+  </p>
+</footer>
+
+<script type="module" src="./app.js"></script>
+</body>
+</html>

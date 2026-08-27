@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wellspring Rx | Wellspring Pharmacy</title>
+<meta name="description" content="Fictional pharmacy portal built for a WebMCP demonstration. All data is fabricated.">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<header class="masthead">
+  <b>Wellspring Rx</b>
+  <span>Prescription and purchase history</span>
+  <span class="spacer"></span>
+  <span id="signed-in">Signed in</span>
+</header>
+
+<div class="strip">
+  <b id="p-name">&mdash;</b> &middot; member <span id="p-member">&mdash;</span> &middot; <span id="branch">&mdash;</span>
+</div>
+
+<nav aria-label="Sections">
+  <button type="button" data-tab="prescriptions" aria-selected="true">Prescriptions</button>
+  <button type="button" data-tab="counter" aria-selected="false">Store purchases</button>
+  <button type="button" data-tab="alerts" aria-selected="false">Safety notices</button>
+</nav>
+
+<main>
+  <section id="tab-prescriptions">
+    <h2>Active prescriptions</h2>
+    <div id="rx-list"></div>
+    <p class="note">
+      Wellspring fills prescriptions written by any prescriber. Two prescribers
+      may have written for the same medication without either of them knowing.
+    </p>
+  </section>
+
+  <section id="tab-counter" hidden>
+    <h2>Store purchases, last 6 months</h2>
+    <div class="receipt">
+      <table>
+        <thead><tr><th>Date</th><th>Item</th><th>Category</th><th class="qty">Qty</th></tr></thead>
+        <tbody id="otc-rows"></tbody>
+      </table>
+    </div>
+    <p class="note">
+      Items bought at the counter do not require a prescription, so they are not
+      reported to any prescriber and do not appear in any clinical record.
+    </p>
+  </section>
+
+  <section id="tab-alerts" hidden>
+    <h2>Safety notices</h2>
+    <div id="alert-list"></div>
+    <p class="note">
+      These notices are generated from dispensing records only. Wellspring does
+      not receive laboratory results, so notices cannot account for kidney
+      function or electrolyte values.
+    </p>
+  </section>
+</main>
+
+<footer>
+  <p>
+    <strong>Fictional portal.</strong> Wellspring Pharmacy does not exist and every
+    record here is fabricated. Built as one of three independent origins for a WebMCP
+    demonstration. See the project DISCLAIMER.
+  </p>
+</footer>
+
+<script type="module" src="./app.js"></script>
+</body>
+</html>

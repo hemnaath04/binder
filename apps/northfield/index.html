@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NorthfieldConnect | Northfield Cardiology Associates</title>
+<meta name="description" content="Fictional patient portal built for a WebMCP demonstration. All data is fabricated.">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<header class="masthead">
+  <b>NorthfieldConnect</b>
+  <span>Northfield Cardiology Associates</span>
+  <span class="spacer"></span>
+  <span id="signed-in">Signed in</span>
+</header>
+
+<div class="patientbar">
+  <div><dfn>Patient</dfn> <b id="p-name">&mdash;</b></div>
+  <div><dfn>DOB</dfn> <span id="p-dob">&mdash;</span></div>
+  <div><dfn>MRN</dfn> <span id="p-mrn">&mdash;</span></div>
+  <div><dfn>Cardiologist</dfn> <span id="p-doc">&mdash;</span></div>
+</div>
+
+<nav aria-label="Sections">
+  <button type="button" data-tab="medications" aria-selected="true">Medications</button>
+  <button type="button" data-tab="labs" aria-selected="false">Test results</button>
+  <button type="button" data-tab="appointments" aria-selected="false">Appointments</button>
+  <button type="button" data-tab="messages" aria-selected="false">Messages</button>
+</nav>
+
+<main>
+  <section id="tab-medications">
+    <h2>Current medications</h2>
+    <div class="panel">
+      <table>
+        <caption>Prescribed by this practice</caption>
+        <thead>
+          <tr><th>Medication</th><th>Instructions</th><th>Class</th><th>Started</th></tr>
+        </thead>
+        <tbody id="med-rows"></tbody>
+      </table>
+    </div>
+    <p class="note">
+      This list shows only what Northfield Cardiology has prescribed. Medications
+      from other practices, and anything bought without a prescription, are not
+      shown here and are not known to this office.
+    </p>
+  </section>
+
+  <section id="tab-labs" hidden>
+    <h2>Test results</h2>
+    <div id="lab-panels"></div>
+    <p class="note">
+      This practice orders cardiac testing. Kidney function and electrolyte
+      results ordered elsewhere do not appear in this portal.
+    </p>
+  </section>
+
+  <section id="tab-appointments" hidden>
+    <h2>Appointments</h2>
+    <div class="panel">
+      <table>
+        <thead><tr><th>Date</th><th>Time</th><th>Visit</th><th>Location</th></tr></thead>
+        <tbody id="appt-rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="tab-messages" hidden>
+    <h2>Messages</h2>
+    <div class="panel" id="msg-list"></div>
+  </section>
+</main>
+
+<footer>
+  <p>
+    <strong>Fictional portal.</strong> Northfield Cardiology Associates does not exist and
+    every record here is fabricated. Built as one of three independent origins for a
+    WebMCP demonstration. See the project DISCLAIMER.
+  </p>
+</footer>
+
+<script type="module" src="./app.js"></script>
+</body>
+</html>
