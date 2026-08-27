@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Binder</title>
+<meta name="description" content="One reconciled picture of a parent's care, assembled in the browser from portals that do not talk to each other.">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<header class="top">
+  <div class="inner">
+    <h1 class="wordmark">Binder</h1>
+    <p class="tagline">One picture of your dad's care, put together from portals that do not talk to each other.</p>
+    <div class="who">
+      <span>Caring for <b id="patient">&mdash;</b></span>
+      <span class="sep">&middot;</span>
+      <span class="muted"><b id="source-count">0</b> sources connected</span>
+      <span class="sep">&middot;</span>
+      <span class="muted" id="read-status">&mdash;</span>
+    </div>
+    <nav aria-label="Sections">
+      <button type="button" data-tab="ask" aria-selected="true">What to ask<span class="count" id="count-ask"></span></button>
+      <button type="button" data-tab="meds" aria-selected="false">Medications<span class="count" id="count-meds"></span></button>
+      <button type="button" data-tab="timeline" aria-selected="false">Timeline</button>
+      <button type="button" data-tab="sources" aria-selected="false">Sources</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section id="tab-ask">
+    <h2>What to ask at the next appointment</h2>
+    <p class="lede">
+      Each of these needs information from more than one portal, so no single
+      doctor's screen shows it. Every one comes with the evidence behind it.
+    </p>
+    <div id="findings"></div>
+    <p class="scope">
+      <strong>Binder does not give medical advice.</strong> It reads what you already have
+      access to and turns it into questions for a clinician. It does not diagnose and it
+      never tells anyone to start, stop or change a medication. Take these to the
+      appointment and decide together.
+    </p>
+  </section>
+
+  <section id="tab-meds" hidden>
+    <h2>One medication list</h2>
+    <p class="lede">
+      Every medicine from every source, grouped by what it actually is rather than
+      by what each portal calls it.
+    </p>
+    <div id="meds"></div>
+  </section>
+
+  <section id="tab-timeline" hidden>
+    <h2>Everything, in order</h2>
+    <p class="lede">Appointments, lab draws, prescription fills and counter purchases, newest first.</p>
+    <ul class="timeline" id="timeline"></ul>
+  </section>
+
+  <section id="tab-sources" hidden>
+    <h2>Where this came from</h2>
+    <p class="lede">
+      Binder reads each portal in your own signed-in session. Nothing is copied to a
+      server, and no one else ever holds this information.
+    </p>
+    <div id="sources"></div>
+    <div class="banner" id="read-detail"></div>
+  </section>
+</main>
+
+<script type="module" src="./app.js"></script>
+</body>
+</html>

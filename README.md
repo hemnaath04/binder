@@ -55,9 +55,9 @@ Built during the submission period, which opened 2026-08-25.
 | Day | Milestone | State |
 | --- | --- | --- |
 | 2 | Federation proof, 13 checks across three local origins | done, 11 pass |
-| 3 | Three portal apps, human interface, seeded fixtures | **done** |
-| 4 | Host UI and reconciliation engine | next |
-| 5 | Full WebMCP tool surface and approval queue | |
+| 3 | Three portal apps, human interface, seeded fixtures | done |
+| 4 | Host UI and reconciliation engine | **done**, 16 tests green |
+| 5 | Full WebMCP tool surface and approval queue | next |
 | 6 | Eval harness | |
 
 ## Run it
@@ -71,6 +71,12 @@ Built during the submission period, which opened 2026-08-25.
 | Northfield Cardiology | http://localhost:8091/ |
 | St. Albans Kidney Care | http://localhost:8092/ |
 | Wellspring Pharmacy | http://localhost:8093/ |
+| **Binder** | **http://localhost:8090/** |
+
+```
+npm test                        # 16 deterministic tests over the engine
+node tools/make-snapshot.mjs    # regenerate the host's saved copy of the portals
+```
 
 No build step, on purpose. Every file is served exactly as written, so the code in DevTools is the code on disk. `localhost` is a secure context, so three ports are three genuine origins and cross-origin federation is testable with no deployment.
 
@@ -81,6 +87,10 @@ No build step, on purpose. Every file is served exactly as written, so the code 
 **Each portal owns its own data outright.** There is no shared fixtures package, no common patient id, no sync. That mirrors reality and is why reconciliation has to happen in the browser.
 
 **Tools reuse the functions the interface already calls.** The human interface was built first for exactly this reason: a tool added later calls the same reader the screen calls, never a parallel code path.
+
+**Reconciliation is rule-based, not model-driven.** Two reasons. It has to be right the same way every time, because a caregiver deciding what to raise with a nephrologist is poorly served by an answer that varies between runs. And it means the product delivers its full value with no agent present, which is what the Execution criterion rewards. The agent makes this faster and conversational. It is not load bearing.
+
+**Findings are questions, never conclusions.** A test enforces it: every finding must end in a question mark and must not read as an instruction.
 
 **Tool names are globally unique across origins.** Not a style preference. Measured in the federation proof: `getTools()` dedupes by tool name *before* filtering by origin, so two portals exposing `list_medications` means one is silently dropped, with no error.
 

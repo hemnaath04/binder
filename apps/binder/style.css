@@ -1,0 +1,144 @@
+/* Binder.
+ *
+ * The three portals are colourful institutional software, each shouting its own
+ * brand. Binder is the opposite on purpose: paper and ink, quiet, editorial.
+ * Colour appears only where it carries meaning, which is on findings. If the
+ * page looks calm and the findings look urgent, the design is doing its job.
+ */
+:root {
+  color-scheme: light;
+  --paper: #fbfaf7;
+  --card: #ffffff;
+  --ink: #17150f;
+  --ink-2: #3d3830;
+  --muted: #6f6759;
+  --rule: #e2ddd2;
+  --rule-strong: #cec7b8;
+
+  /* the only colours in the system, and each one means something */
+  --soon: #9c2f16;
+  --soon-bg: #fdf1ec;
+  --later: #7a5c12;
+  --later-bg: #fdf8e9;
+  --calm: #2f5c47;
+  --calm-bg: #eef4f0;
+
+  --serif: ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
+  --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font-family: var(--sans); font-size: 15px; line-height: 1.55;
+}
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; border-radius: 3px; }
+
+/* ------------------------------------------------------------------ header */
+.top { border-bottom: 1px solid var(--rule); background: var(--card); }
+.top .inner { max-width: 900px; margin: 0 auto; padding: 18px 22px 0; }
+.wordmark { font-family: var(--serif); font-size: 25px; letter-spacing: -0.015em; margin: 0; }
+.tagline { color: var(--muted); font-size: 14px; margin: 2px 0 14px; }
+.who { display: flex; gap: 8px 20px; flex-wrap: wrap; align-items: baseline; padding-bottom: 14px; font-size: 14px; }
+.who b { font-weight: 600; }
+.who .sep { color: var(--rule-strong); }
+.who .muted { color: var(--muted); }
+
+nav { display: flex; gap: 22px; overflow-x: auto; }
+nav button {
+  font: inherit; font-size: 14px; border: 0; background: none; cursor: pointer;
+  padding: 9px 0 11px; color: var(--muted); border-bottom: 2px solid transparent; white-space: nowrap;
+}
+nav button:hover { color: var(--ink); }
+nav button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--ink); font-weight: 600; }
+nav .count { font-variant-numeric: tabular-nums; font-size: 12px; color: var(--muted); margin-left: 5px; }
+nav button[aria-selected="true"] .count { color: var(--soon); }
+
+main { max-width: 900px; margin: 0 auto; padding: 26px 22px 60px; }
+h2 { font-family: var(--serif); font-size: 21px; font-weight: 600; margin: 0 0 4px; letter-spacing: -0.01em; }
+.lede { color: var(--muted); margin: 0 0 20px; max-width: 62ch; }
+[hidden] { display: none !important; }
+
+/* ---------------------------------------------------------------- findings */
+.finding {
+  background: var(--card); border: 1px solid var(--rule); border-left: 3px solid var(--rule-strong);
+  border-radius: 4px; padding: 16px 18px; margin-bottom: 12px;
+}
+.finding.soon { border-left-color: var(--soon); }
+.finding.later { border-left-color: var(--later); }
+.badge {
+  display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 0.05em;
+  text-transform: uppercase; padding: 2px 7px; border-radius: 3px; margin-bottom: 8px;
+}
+.badge.soon { background: var(--soon-bg); color: var(--soon); }
+.badge.later { background: var(--later-bg); color: var(--later); }
+.finding h3 { font-family: var(--serif); font-size: 18px; font-weight: 600; margin: 0 0 6px; letter-spacing: -0.01em; }
+.finding .summary { margin: 0 0 12px; color: var(--ink-2); max-width: 68ch; }
+.ask {
+  background: var(--paper); border: 1px solid var(--rule); border-radius: 4px;
+  padding: 11px 14px; margin-bottom: 12px;
+}
+.ask dfn {
+  display: block; font-style: normal; font-size: 11px; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--muted); margin-bottom: 3px;
+}
+.ask q { font-family: var(--serif); font-size: 17px; quotes: none; }
+details.evidence { border-top: 1px solid var(--rule); padding-top: 10px; }
+details.evidence summary { cursor: pointer; font-size: 13px; color: var(--muted); list-style: none; }
+details.evidence summary::-webkit-details-marker { display: none; }
+details.evidence summary::before { content: "▸ "; }
+details[open].evidence summary::before { content: "▾ "; }
+details.evidence summary:hover { color: var(--ink); }
+.evidence ul { list-style: none; margin: 10px 0 0; padding: 0; }
+.evidence li { display: grid; grid-template-columns: 165px 1fr; gap: 12px; padding: 5px 0; border-bottom: 1px dotted var(--rule); font-size: 13px; }
+.evidence li:last-child { border-bottom: 0; }
+.evidence .from { color: var(--muted); }
+.cites { margin: 10px 0 0; font-size: 12px; color: var(--muted); }
+.cites li { list-style: none; }
+
+/* ------------------------------------------------------------ medications */
+.med { background: var(--card); border: 1px solid var(--rule); border-radius: 4px; padding: 14px 16px; margin-bottom: 8px; }
+.med.flagged { border-color: var(--soon); }
+.med h3 { font-family: var(--serif); font-size: 17px; margin: 0 0 2px; }
+.med .classes { font-size: 12px; color: var(--muted); margin: 0 0 10px; }
+.med ul { list-style: none; margin: 0; padding: 0; }
+.med li { display: grid; grid-template-columns: 165px 1fr; gap: 12px; padding: 6px 0; border-top: 1px solid var(--rule); font-size: 13px; }
+.med .from { color: var(--muted); }
+.dupe { display: inline-block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--soon); background: var(--soon-bg); padding: 2px 7px; border-radius: 3px; margin-left: 6px; }
+
+/* --------------------------------------------------------------- timeline */
+.timeline { list-style: none; margin: 0; padding: 0; }
+.timeline li { display: grid; grid-template-columns: 108px 1fr; gap: 16px; padding: 11px 0; border-bottom: 1px solid var(--rule); }
+.timeline li:last-child { border-bottom: 0; }
+.timeline time { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.timeline b { font-weight: 600; }
+.timeline .detail { color: var(--muted); font-size: 13px; }
+.kind { display: inline-block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); border: 1px solid var(--rule-strong); border-radius: 3px; padding: 0 5px; margin-right: 6px; }
+
+/* ---------------------------------------------------------------- sources */
+.source { background: var(--card); border: 1px solid var(--rule); border-radius: 4px; padding: 14px 16px; margin-bottom: 8px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: baseline; }
+.source h3 { font-size: 15px; margin: 0 0 2px; }
+.source .origin { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.source .read { font-size: 13px; color: var(--muted); text-align: right; }
+.status { display: inline-block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 7px; border-radius: 3px; background: var(--calm-bg); color: var(--calm); }
+.status.saved { background: var(--later-bg); color: var(--later); }
+
+.banner { border: 1px solid var(--rule-strong); background: var(--card); border-radius: 4px; padding: 12px 16px; margin-bottom: 20px; font-size: 14px; color: var(--ink-2); }
+.banner b { color: var(--ink); }
+.scope { border-top: 1px solid var(--rule); margin-top: 34px; padding-top: 16px; color: var(--muted); font-size: 13px; max-width: 68ch; }
+.scope strong { color: var(--ink-2); }
+.empty { color: var(--muted); font-style: italic; }
+
+@media (max-width: 620px) {
+  .evidence li, .med li, .timeline li { grid-template-columns: 1fr; gap: 2px; }
+  main, .top .inner { padding-inline: 16px; }
+}
+@media print {
+  nav, .top .tagline, .banner { display: none; }
+  body { background: #fff; }
+  .finding, .med { break-inside: avoid; border-left-width: 3px; }
+  details.evidence { display: block; }
+  details.evidence[open] summary { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }

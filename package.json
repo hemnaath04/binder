@@ -1,0 +1,13 @@
+{
+  "name": "binder",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Caregiver care coordination across fragmented patient portals, on a cross-origin WebMCP tool gateway.",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "snapshot": "node tools/make-snapshot.mjs",
+    "dev": "./dev.sh"
+  }
+}
