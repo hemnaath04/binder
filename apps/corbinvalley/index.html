@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Corbin Valley Discharge Record | Corbin Valley Hospital</title>
+<meta name="description" content="Fictional hospital discharge record built for a WebMCP demonstration. All data is fabricated.">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<header class="masthead">
+  <b>Corbin Valley Discharge Record</b>
+  <span>Corbin Valley Hospital</span>
+  <span class="spacer"></span>
+  <span id="signed-in">Signed in</span>
+</header>
+
+<div class="patientbar">
+  <div><dfn>Patient</dfn> <b id="p-name">&mdash;</b></div>
+  <div><dfn>DOB</dfn> <span id="p-dob">&mdash;</span></div>
+  <div><dfn>Record</dfn> <span id="p-mrn">&mdash;</span></div>
+  <div><dfn>Attending</dfn> <span id="p-attending">&mdash;</span></div>
+  <div><dfn>Admitted</dfn> <span id="p-admitted">&mdash;</span></div>
+  <div><dfn>Discharged</dfn> <span id="p-discharged">&mdash;</span></div>
+</div>
+
+<nav aria-label="Sections">
+  <button type="button" data-tab="summary" aria-selected="true">Summary</button>
+  <button type="button" data-tab="procedures" aria-selected="false">Procedures</button>
+  <button type="button" data-tab="medications" aria-selected="false">Medications at discharge</button>
+  <button type="button" data-tab="followup" aria-selected="false">Follow-up care</button>
+</nav>
+
+<main>
+  <section id="tab-summary">
+    <h2>Reason for admission</h2>
+    <div class="panel"><div class="body"><p id="reason-visit"></p></div></div>
+
+    <h2>Discharge diagnoses</h2>
+    <div class="panel" id="dx-list"></div>
+
+    <h2>Hospital course</h2>
+    <div class="panel"><div class="body"><p id="course-text"></p></div></div>
+
+    <p class="note">
+      This record is fixed as of the day of discharge. It does not know anything that
+      happened afterward, in this hospital or anywhere else.
+    </p>
+  </section>
+
+  <section id="tab-procedures" hidden>
+    <h2>Procedures and consults</h2>
+    <div class="panel" id="consult-list"></div>
+    <p class="note">
+      Only what happened during this hospital stay appears here. Any care since discharge
+      belongs to the outpatient practices that provided it.
+    </p>
+  </section>
+
+  <section id="tab-medications" hidden>
+    <h2>Medications started or continued at discharge</h2>
+    <div class="panel">
+      <table>
+        <thead><tr><th>Medication</th><th>Instructions</th><th>Why</th></tr></thead>
+        <tbody id="med-rows"></tbody>
+      </table>
+    </div>
+    <p class="note">
+      This is the discharge medication list from this stay only. It does not reflect
+      anything prescribed, changed or stopped since.
+    </p>
+  </section>
+
+  <section id="tab-followup" hidden>
+    <h2>Referrals made at discharge</h2>
+    <div class="panel" id="followup-list"></div>
+
+    <h2>Discharge instructions</h2>
+    <div class="panel"><div class="body"><p id="instructions-text"></p></div></div>
+
+    <div class="panel">
+      <form id="release-form">
+        <div class="body">
+          <h3><label for="release-recipient">Send this record to another provider</label></h3>
+          <p class="sig">A copy will be sent from the medical records office within five business days.</p>
+          <p>
+            <input id="release-recipient" name="recipient" type="text" required
+                   placeholder="Provider or organization name">
+          </p>
+          <p>
+            <textarea id="release-note" name="note" rows="3"
+                      placeholder="Optional note for the records office"></textarea>
+          </p>
+          <p><button type="submit">Request release</button></p>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>
+    <strong>Fictional record.</strong> Corbin Valley Hospital does not exist and every entry
+    here is fabricated. Built as one of four independent origins for a WebMCP demonstration.
+    See the project DISCLAIMER.
+  </p>
+</footer>
+
+<script type="module" src="./app.js"></script>
+</body>
+</html>
