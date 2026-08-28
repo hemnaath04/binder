@@ -55,10 +55,10 @@ Built during the submission period, which opened 2026-08-25.
 | Day | Milestone | State |
 | --- | --- | --- |
 | 2 | Federation proof, 13 checks across three local origins | done, 11 pass |
-| 3 | Three portal apps, human interface, seeded fixtures | **done** |
-| 4 | Host UI and reconciliation engine | next |
-| 5 | Full WebMCP tool surface and approval queue | |
-| 6 | Eval harness | |
+| 3 | Three portal apps, human interface, seeded fixtures | done |
+| 4 | Host UI and reconciliation engine | done, 16 tests green |
+| 5 | Full WebMCP tool surface and approval queue | **done**, 24 tools verified natively |
+| 6 | Eval harness | next |
 
 ## Run it
 
@@ -71,8 +71,37 @@ Built during the submission period, which opened 2026-08-25.
 | Northfield Cardiology | http://localhost:8091/ |
 | St. Albans Kidney Care | http://localhost:8092/ |
 | Wellspring Pharmacy | http://localhost:8093/ |
+| **Binder** | **http://localhost:8090/** |
+
+```
+npm test                        # 16 deterministic tests over the engine
+node tools/make-snapshot.mjs    # regenerate the host's saved copy of the portals
+```
 
 No build step, on purpose. Every file is served exactly as written, so the code in DevTools is the code on disk. `localhost` is a secure context, so three ports are three genuine origins and cross-origin federation is testable with no deployment.
+
+## The tool surface
+
+24 tools across four origins, all verified registering and executing in Chrome 152.
+
+| Origin | Tools | Kind |
+| --- | --- | --- |
+| Northfield Cardiology | `northfield_list_meds`, `northfield_list_labs`, `northfield_list_visits`, `northfield_read_messages` | read |
+| Northfield Cardiology | `northfield_send_message` | **declarative**, synthesised from the compose form |
+| St. Albans Kidney Care | `stalbans_list_meds`, `stalbans_list_labs`, `stalbans_list_visits`, `stalbans_read_messages` | read |
+| St. Albans Kidney Care | `stalbans_ask_reschedule` | write |
+| Wellspring Pharmacy | `wellspring_list_rx`, `wellspring_list_purchases`, `wellspring_list_alerts` | read |
+| Wellspring Pharmacy | `wellspring_ask_refill` | write |
+| **Binder (broker)** | `list_connected_sources`, `build_medication_list`, `find_care_conflicts`, `explain_care_conflict`, `get_care_timeline`, `prepare_visit_questions`, `list_staged_actions` | read |
+| **Binder (broker)** | `stage_refill_request`, `stage_reschedule_ask` | stage only, never send |
+
+Portal tools are published to the Binder origin alone, via `exposedTo`. Binder discovers them with `getTools({ fromOrigins })`, calls them with `executeTool`, and re-registers a curated set as its own, so a browser agent sees one coherent list of nine rather than three disconnected sites with fifteen tools between them.
+
+### What is deliberately not built
+
+**There is no `approve_staged_action` tool, and there will not be one.** An agent that can approve its own writes is not gated. Approval is reachable only from a human click handler in the page. Saying what we refused to build is a stronger signal than the tool count.
+
+**No tool returns a clinical conclusion.** `find_care_conflicts` returns questions with the evidence behind them.
 
 ## Design notes
 
@@ -81,6 +110,10 @@ No build step, on purpose. Every file is served exactly as written, so the code 
 **Each portal owns its own data outright.** There is no shared fixtures package, no common patient id, no sync. That mirrors reality and is why reconciliation has to happen in the browser.
 
 **Tools reuse the functions the interface already calls.** The human interface was built first for exactly this reason: a tool added later calls the same reader the screen calls, never a parallel code path.
+
+**Reconciliation is rule-based, not model-driven.** Two reasons. It has to be right the same way every time, because a caregiver deciding what to raise with a nephrologist is poorly served by an answer that varies between runs. And it means the product delivers its full value with no agent present, which is what the Execution criterion rewards. The agent makes this faster and conversational. It is not load bearing.
+
+**Findings are questions, never conclusions.** A test enforces it: every finding must end in a question mark and must not read as an instruction.
 
 **Tool names are globally unique across origins.** Not a style preference. Measured in the federation proof: `getTools()` dedupes by tool name *before* filtering by origin, so two portals exposing `list_medications` means one is silently dropped, with no error.
 

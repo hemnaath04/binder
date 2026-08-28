@@ -118,6 +118,9 @@ export function renderAppointments() {
           <h3>${esc(a.kind)}</h3>
           <p class="meta">${fmtDate(a.date)} at ${esc(a.time)} &middot; ${esc(a.clinician)}</p>
           <p class="meta">${esc(a.location)}</p>
+          ${a.status === 'reschedule_requested'
+            ? '<p><span class="tag">reschedule requested</span></p>'
+            : `<p><button type="button" data-reschedule="${esc(a.id)}">Ask to reschedule</button></p>`}
         </div>`).join('')
     : '<p class="empty">No upcoming visits.</p>';
 }
@@ -132,6 +135,46 @@ export function renderMessages() {
         </div>`).join('')
     : '<p class="empty">No messages.</p>';
 }
+
+/**
+ * Ask the clinic to move an appointment.
+ *
+ * The same function backs the Reschedule button and the WebMCP tool. It marks
+ * the appointment as a pending request rather than moving it, because a patient
+ * portal cannot unilaterally change a clinic's calendar and pretending
+ * otherwise would be a lie in the interface.
+ */
+export function requestReschedule({ appointmentId, reason }) {
+  const appt = APPOINTMENTS.find((a) => a.id === appointmentId);
+  if (!appt) {
+    const known = APPOINTMENTS.map((a) => a.id).join(', ');
+    throw new Error(`No appointment with id "${appointmentId}". Known ids: ${known}.`);
+  }
+  if (appt.status === 'reschedule_requested') {
+    throw new Error(`A reschedule was already requested for ${appt.kind} on ${appt.date}.`);
+  }
+  appt.status = 'reschedule_requested';
+  appt.rescheduleReason = String(reason ?? '').trim() || null;
+  renderAppointments();
+
+  const note = $('#reschedule-note');
+  note.hidden = false;
+  note.textContent =
+    `Reschedule requested for ${appt.kind} on ${fmtDate(appt.date)}. The scheduling team will call ` +
+    'to offer a new time. The original appointment stands until they do.';
+  return appt;
+}
+
+document.addEventListener('click', (event) => {
+  const btn = event.target.closest('button[data-reschedule]');
+  if (!btn) return;
+  const reason = window.prompt('Why does this need to move? (optional)') ?? '';
+  try {
+    requestReschedule({ appointmentId: btn.dataset.reschedule, reason });
+  } catch (error) {
+    window.alert(error.message);
+  }
+});
 
 function showTab(name) {
   for (const btn of document.querySelectorAll('nav button')) {

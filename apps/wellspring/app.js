@@ -43,6 +43,11 @@ export function renderPrescriptions() {
           last filled ${fmtDate(rx.lastFilled)} &middot;
           ${left > 0 ? `about ${left} days of supply remaining` : 'supply may have run out'}
         </div>
+        <div class="meta">
+          ${rx.refillRequested
+            ? '<span class="requested">refill requested</span>'
+            : `<button type="button" data-refill="${esc(rx.rxNumber)}">Request refill</button>`}
+        </div>
       </div>`;
   }).join('');
 }
@@ -70,6 +75,45 @@ export function renderAlerts() {
         </div>`).join('')
     : '<p class="empty">No safety notices.</p>';
 }
+
+/**
+ * Ask the pharmacy to refill a prescription.
+ *
+ * Backs both the Request refill button and the WebMCP tool. It records a
+ * request rather than dispensing anything: a pharmacy has to contact the
+ * prescriber when refills are exhausted, and the interface should say so rather
+ * than imply the medicine is on its way.
+ */
+export function requestRefill({ rxNumber }) {
+  const rx = PRESCRIPTIONS.find((r) => r.rxNumber === String(rxNumber));
+  if (!rx) {
+    const known = PRESCRIPTIONS.filter((r) => r.status === 'active').map((r) => r.rxNumber).join(', ');
+    throw new Error(`No prescription with Rx number "${rxNumber}". Active numbers: ${known}.`);
+  }
+  if (rx.refillRequested) {
+    throw new Error(`A refill for ${rx.drug} ${rx.strength} was already requested.`);
+  }
+  rx.refillRequested = true;
+  renderPrescriptions();
+
+  const note = $('#refill-note');
+  note.hidden = false;
+  note.textContent = rx.refillsLeft > 0
+    ? `Refill requested for ${rx.drug} ${rx.strength}. It will be ready for pickup.`
+    : `Refill requested for ${rx.drug} ${rx.strength}. No refills remain, so Wellspring will ` +
+      `contact ${rx.prescriber} for authorisation before it can be filled.`;
+  return rx;
+}
+
+document.addEventListener('click', (event) => {
+  const btn = event.target.closest('button[data-refill]');
+  if (!btn) return;
+  try {
+    requestRefill({ rxNumber: btn.dataset.refill });
+  } catch (error) {
+    window.alert(error.message);
+  }
+});
 
 function showTab(name) {
   for (const btn of document.querySelectorAll('nav button')) {

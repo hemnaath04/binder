@@ -6,6 +6,7 @@
 #   :8091  Northfield Cardiology
 #   :8092  St. Albans Kidney Care
 #   :8093  Wellspring Pharmacy
+#   :8094  Corbin Valley Hospital
 #   :8090  Binder host (added on day 4)
 #
 # Ctrl-C stops everything.
@@ -19,9 +20,10 @@ serve() {
 }
 
 echo "serving:"
-serve northfield 8091 "Northfield Cardiology"
-serve stalbans   8092 "St. Albans Kidney Care"
-serve wellspring 8093 "Wellspring Pharmacy   "
+serve northfield   8091 "Northfield Cardiology"
+serve stalbans     8092 "St. Albans Kidney Care"
+serve wellspring   8093 "Wellspring Pharmacy   "
+serve corbinvalley 8094 "Corbin Valley Hospital"
 [ -d binder ] && serve binder 8090 "Binder host           "
 
 trap 'kill $(jobs -p) 2>/dev/null' EXIT INT TERM

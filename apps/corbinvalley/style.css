@@ -1,0 +1,63 @@
+/* Corbin Valley Discharge Record: the fourth portal, and the only one that is
+   not a live account, it is a single frozen document. Parchment background,
+   serif headings, a monospace patient bar, deep maroon accent. Meant to read
+   as an old discharge packet, not a consumer app, because that is what it is. */
+:root {
+  color-scheme: light;
+  --brand: #7a2331;
+  --brand-dark: #5c1a25;
+  --ink: #241d18;
+  --muted: #6b5f55;
+  --line: #d8cdbd;
+  --bg: #f4efe4;
+  --panel: #fffdf8;
+  --new: #3a6b3f;
+  font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-size: 14px; line-height: 1.55; }
+.masthead { background: var(--brand); color: #fdf8f0; padding: 12px 20px; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.masthead b { font-size: 16px; letter-spacing: 0.01em; }
+.masthead span { font-size: 12px; opacity: 0.85; font-family: ui-sans-serif, system-ui, sans-serif; }
+.masthead .spacer { flex: 1; }
+.patientbar { background: var(--panel); border-bottom: 2px double var(--line); padding: 9px 20px; display: flex; gap: 22px; flex-wrap: wrap; font-size: 12px; font-family: ui-monospace, SFMono-Regular, monospace; }
+.patientbar b { font-size: 13px; }
+.patientbar dfn { font-style: normal; color: var(--muted); font-family: ui-sans-serif, system-ui, sans-serif; }
+nav { background: var(--panel); border-bottom: 1px solid var(--line); padding: 0 14px; display: flex; gap: 2px; overflow-x: auto; font-family: ui-sans-serif, system-ui, sans-serif; }
+nav button { font: inherit; font-size: 12px; border: 0; background: transparent; padding: 10px 14px; cursor: pointer; color: var(--muted); border-bottom: 3px solid transparent; white-space: nowrap; }
+nav button:hover { color: var(--ink); background: #f8f3ea; }
+nav button[aria-selected="true"] { color: var(--brand); border-bottom-color: var(--brand); font-weight: 600; }
+nav button:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
+main { max-width: 900px; margin: 0 auto; padding: 20px; }
+h2 { font-size: 14px; margin: 20px 0 10px; color: var(--brand); border-bottom: 1px solid var(--line); padding-bottom: 5px; font-family: ui-sans-serif, system-ui, sans-serif; text-transform: uppercase; letter-spacing: 0.04em; }
+h2:first-child { margin-top: 0; }
+h3 { font-size: 14px; margin: 0 0 3px; }
+.panel { background: var(--panel); border: 1px solid var(--line); margin-bottom: 4px; }
+.panel > .body { padding: 14px 16px; }
+.panel .body + .body { border-top: 1px dashed var(--line); }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 10px 16px; border-bottom: 1px solid #ece3d4; vertical-align: top; }
+th { background: #f8f2e6; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); font-family: ui-sans-serif, system-ui, sans-serif; }
+tbody tr:last-child td { border-bottom: 0; }
+.sig { color: var(--muted); font-size: 12px; font-family: ui-sans-serif, system-ui, sans-serif; }
+.note { background: #efe6d3; border-left: 3px solid var(--brand); padding: 10px 14px; margin-top: 10px; font-size: 12px; font-family: ui-sans-serif, system-ui, sans-serif; color: var(--muted); }
+.empty { color: var(--muted); font-style: italic; }
+footer { max-width: 900px; margin: 0 auto; padding: 0 20px 32px; color: var(--muted); font-size: 11px; font-family: ui-sans-serif, system-ui, sans-serif; }
+footer strong { color: var(--brand); }
+[hidden] { display: none !important; }
+@media (max-width: 620px) { th, td { padding: 8px 10px; } main { padding: 14px; } }
+
+/* release form, and the highlight the browser applies while a tool drives it */
+#release-form input, #release-form textarea {
+  font: inherit; font-family: ui-sans-serif, system-ui, sans-serif; width: 100%; max-width: 460px;
+  padding: 7px 9px; border: 1px solid var(--line); border-radius: 2px; background: #fff; color: var(--ink);
+}
+#release-form textarea { resize: vertical; }
+#release-form button {
+  font: inherit; font-family: ui-sans-serif, system-ui, sans-serif; font-weight: 600; padding: 7px 16px;
+  border: 1px solid var(--brand); background: var(--brand); color: #fff; border-radius: 2px; cursor: pointer;
+}
+#release-form button:hover { background: var(--brand-dark); }
+#release-form p { margin: 0 0 10px; font-family: ui-sans-serif, system-ui, sans-serif; }
+#release-form.tool-form-active { outline: 2px solid var(--brand); outline-offset: 6px; }
+.release-note { background: #e8efe6; border-left: 3px solid var(--new); padding: 10px 14px; margin: 0 0 12px; font-size: 12px; font-family: ui-sans-serif, system-ui, sans-serif; color: #2c4a2f; }
