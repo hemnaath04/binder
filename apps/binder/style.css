@@ -142,3 +142,34 @@ details.evidence summary:hover { color: var(--ink); }
   details.evidence[open] summary { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* ------------------------------------------------------- approvals + tools */
+.sub-head { margin-top: 34px; }
+.staged {
+  background: var(--card); border: 1px solid var(--rule); border-left: 3px solid var(--later);
+  border-radius: 4px; padding: 16px 18px; margin-bottom: 12px;
+}
+.staged.sent { border-left-color: var(--calm); }
+.staged.rejected, .staged.failed { border-left-color: var(--rule-strong); opacity: 0.72; }
+.staged h3 { font-family: var(--serif); font-size: 17px; margin: 0 0 8px; }
+.staged .who { font-size: 12px; color: var(--muted); margin: 0 0 10px; padding: 0; }
+.diff { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 4px; margin-bottom: 12px; }
+.diff > div { background: var(--paper); padding: 10px 12px; }
+.diff dfn { display: block; font-style: normal; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 4px; }
+.diff p { margin: 0; font-size: 13px; color: var(--ink-2); }
+.diff .to p { color: var(--ink); }
+.staged .actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.staged button { font: inherit; font-size: 14px; font-weight: 600; padding: 7px 16px; border-radius: 4px; cursor: pointer; border: 1px solid var(--ink); }
+.staged button.approve { background: var(--ink); color: var(--paper); }
+.staged button.approve:hover { background: #000; }
+.staged button.reject { background: var(--card); color: var(--ink); border-color: var(--rule-strong); }
+.staged button.reject:hover { border-color: var(--ink); }
+.staged .outcome { font-size: 13px; color: var(--muted); }
+.staged .outcome b { color: var(--ink); }
+.caps { list-style: none; margin: 0 0 8px; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.caps li { background: var(--card); border: 1px solid var(--rule); border-radius: 999px; padding: 3px 11px; font-family: var(--mono); font-size: 12px; }
+.caps li.empty { font-family: var(--sans); color: var(--muted); border-style: dashed; }
+#frames { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
+#frames iframe { width: 100%; height: 170px; border: 1px solid var(--rule); border-radius: 4px; background: var(--card); }
+nav button[aria-selected="true"] .count { color: var(--later); }
+@media (max-width: 620px) { .diff { grid-template-columns: 1fr; } }

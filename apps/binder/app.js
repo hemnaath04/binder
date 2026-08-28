@@ -8,6 +8,9 @@
  */
 
 import { loadSources, PATIENT } from './sources.js';
+import { mountPortals } from './portals.js';
+import * as approvals from './approvals.js';
+import { registerBinderTools, connectState } from './tools.js';
 import {
   buildMedicationList,
   findCareConflicts,
@@ -130,6 +133,73 @@ function renderTimeline() {
     </li>`).join('');
 }
 
+function renderApprovals() {
+  const items = approvals.list();
+  const pending = items.filter((a) => a.status === 'pending').length;
+  $('#count-approvals').textContent = pending ? String(pending) : '';
+
+  if (!items.length) {
+    $('#approvals').innerHTML =
+      '<p class="empty">Nothing is waiting. Anything Binder or your agent wants to send will appear here first.</p>';
+    return;
+  }
+
+  $('#approvals').innerHTML = items.map((a) => {
+    const cls = a.status === 'pending' ? '' : a.status;
+    const who = a.requestedBy === 'agent' ? 'Your agent proposed this' : 'You proposed this';
+    return `
+      <article class="staged ${cls}" data-action="${esc(a.id)}">
+        <h3>${esc(a.title)}</h3>
+        <p class="who">${esc(who)} &middot; goes to ${esc(a.portalName)}</p>
+        <div class="diff">
+          <div><dfn>Now</dfn><p>${esc(a.before)}</p></div>
+          <div class="to"><dfn>If you approve</dfn><p>${esc(a.after)}</p></div>
+        </div>
+        ${a.status === 'pending' ? `
+          <div class="actions">
+            <button type="button" class="approve" data-approve="${esc(a.id)}">Approve and send</button>
+            <button type="button" class="reject" data-reject="${esc(a.id)}">Reject</button>
+          </div>` : `
+          <p class="outcome">${statusLine(a)}</p>`}
+      </article>`;
+  }).join('');
+}
+
+function statusLine(a) {
+  if (a.status === 'sent') return `<b>Sent</b> to ${esc(a.portalName)}. It cannot be recalled from here.`;
+  if (a.status === 'rejected') return '<b>Rejected.</b> Nothing was sent.';
+  if (a.status === 'failed') return `<b>Could not send.</b> ${esc(a.error ?? 'The portal did not accept it.')}`;
+  return '';
+}
+
+/** Approval is only ever reachable from a human click. No tool calls this. */
+document.addEventListener('click', async (event) => {
+  const approveBtn = event.target.closest('button[data-approve]');
+  const rejectBtn = event.target.closest('button[data-reject]');
+  if (!approveBtn && !rejectBtn) return;
+
+  if (rejectBtn) {
+    approvals.reject(rejectBtn.dataset.reject);
+    return;
+  }
+  approveBtn.disabled = true;
+  approveBtn.textContent = 'Sending...';
+  await approvals.approve(approveBtn.dataset.approve);
+});
+
+async function renderCapabilities() {
+  const mc = document.modelContext;
+  const list = $('#capabilities');
+  if (typeof mc?.getTools !== 'function') {
+    list.innerHTML = '<li class="empty">this browser has no WebMCP support</li>';
+    return;
+  }
+  const tools = (await mc.getTools()).filter((t) => t.origin === location.origin);
+  list.innerHTML = tools.length
+    ? tools.map((t) => `<li>${esc(t.name)}</li>`).join('')
+    : '<li class="empty">no tools published</li>';
+}
+
 function renderSources() {
   $('#sources').innerHTML = state.sources.map((s) => `
     <article class="source">
@@ -176,12 +246,42 @@ export function renderAll() {
   renderMedications();
   renderTimeline();
   renderSources();
+  renderApprovals();
 }
 
 async function boot() {
-  const result = await loadSources();
-  Object.assign(state, result);
+  // Tools read the same state the screen reads. One source of truth, so an
+  // agent can never be told something different from what the caregiver sees.
+  connectState(() => ({ sources: state.sources, via: state.via }));
+
+  // Show the saved copy immediately. A caregiver should never wait on a network
+  // read to see the picture they already had.
+  Object.assign(state, await loadSnapshotFirst());
   renderAll();
+
+  const frames = document.getElementById('frames');
+  if (frames && typeof document.modelContext?.getTools === 'function') {
+    await mountPortals(frames);
+    try {
+      const live = await loadSources();
+      Object.assign(state, live);
+      renderAll();
+    } catch (error) {
+      console.warn('[binder] live read failed, staying on the saved copy:', error);
+    }
+  }
+
+  await registerBinderTools();
+  await renderCapabilities();
+  document.modelContext?.addEventListener?.('toolchange', renderCapabilities);
 }
+
+/** The saved copy, without attempting a live read first. */
+async function loadSnapshotFirst() {
+  const { snapshotSource } = await import('./sources.js');
+  return { sources: await snapshotSource.readAll(), via: snapshotSource, degraded: false };
+}
+
+approvals.onQueueChange(renderApprovals);
 
 boot();

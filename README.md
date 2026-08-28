@@ -56,9 +56,9 @@ Built during the submission period, which opened 2026-08-25.
 | --- | --- | --- |
 | 2 | Federation proof, 13 checks across three local origins | done, 11 pass |
 | 3 | Three portal apps, human interface, seeded fixtures | done |
-| 4 | Host UI and reconciliation engine | **done**, 16 tests green |
-| 5 | Full WebMCP tool surface and approval queue | next |
-| 6 | Eval harness | |
+| 4 | Host UI and reconciliation engine | done, 16 tests green |
+| 5 | Full WebMCP tool surface and approval queue | **done**, 24 tools verified natively |
+| 6 | Eval harness | next |
 
 ## Run it
 
@@ -79,6 +79,29 @@ node tools/make-snapshot.mjs    # regenerate the host's saved copy of the portal
 ```
 
 No build step, on purpose. Every file is served exactly as written, so the code in DevTools is the code on disk. `localhost` is a secure context, so three ports are three genuine origins and cross-origin federation is testable with no deployment.
+
+## The tool surface
+
+24 tools across four origins, all verified registering and executing in Chrome 152.
+
+| Origin | Tools | Kind |
+| --- | --- | --- |
+| Northfield Cardiology | `northfield_list_meds`, `northfield_list_labs`, `northfield_list_visits`, `northfield_read_messages` | read |
+| Northfield Cardiology | `northfield_send_message` | **declarative**, synthesised from the compose form |
+| St. Albans Kidney Care | `stalbans_list_meds`, `stalbans_list_labs`, `stalbans_list_visits`, `stalbans_read_messages` | read |
+| St. Albans Kidney Care | `stalbans_ask_reschedule` | write |
+| Wellspring Pharmacy | `wellspring_list_rx`, `wellspring_list_purchases`, `wellspring_list_alerts` | read |
+| Wellspring Pharmacy | `wellspring_ask_refill` | write |
+| **Binder (broker)** | `list_connected_sources`, `build_medication_list`, `find_care_conflicts`, `explain_care_conflict`, `get_care_timeline`, `prepare_visit_questions`, `list_staged_actions` | read |
+| **Binder (broker)** | `stage_refill_request`, `stage_reschedule_ask` | stage only, never send |
+
+Portal tools are published to the Binder origin alone, via `exposedTo`. Binder discovers them with `getTools({ fromOrigins })`, calls them with `executeTool`, and re-registers a curated set as its own, so a browser agent sees one coherent list of nine rather than three disconnected sites with fifteen tools between them.
+
+### What is deliberately not built
+
+**There is no `approve_staged_action` tool, and there will not be one.** An agent that can approve its own writes is not gated. Approval is reachable only from a human click handler in the page. Saying what we refused to build is a stronger signal than the tool count.
+
+**No tool returns a clinical conclusion.** `find_care_conflicts` returns questions with the evidence behind them.
 
 ## Design notes
 

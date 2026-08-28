@@ -53,3 +53,20 @@ footer { max-width: 940px; margin: 0 auto; padding: 0 18px 32px; color: var(--mu
 footer strong { color: var(--flag); }
 [hidden] { display: none !important; }
 @media (max-width: 620px) { th, td { padding: 6px 10px; } main { padding: 12px; } }
+
+/* compose form, and the highlight the browser applies while a tool drives it */
+#compose input, #compose textarea {
+  font: inherit; width: 100%; max-width: 460px; padding: 6px 8px;
+  border: 1px solid var(--line); border-radius: 2px; background: #fff; color: var(--ink);
+}
+#compose textarea { resize: vertical; }
+#compose button {
+  font: inherit; font-weight: 600; padding: 6px 16px; border: 1px solid var(--brand);
+  background: var(--brand); color: #fff; border-radius: 2px; cursor: pointer;
+}
+#compose button:hover { background: var(--brand-dark); }
+#compose p { margin: 0 0 10px; }
+#compose.tool-form-active { outline: 2px solid var(--brand); outline-offset: 6px; }
+.sent-note { background: #eaf3ea; border-left: 3px solid #3a7a41; padding: 8px 12px; margin: 0 14px 12px; font-size: 12px; }
+.msg.outbound { background: #f6f9fc; }
+.msg.outbound header b::after { content: " (sent by you)"; font-weight: 400; color: var(--muted); font-size: 11px; }

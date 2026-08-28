@@ -69,6 +69,29 @@
 
   <section id="tab-messages" hidden>
     <h2>Messages</h2>
+
+    <div class="panel">
+      <form id="compose"
+            toolname="northfield_send_message"
+            tooldescription="Send a message to the Northfield Cardiology care team about this patient. Use for questions about medications, symptoms or appointments.">
+        <div class="body">
+          <h3><label for="msg-subject">New message to your care team</label></h3>
+          <p class="sig">Replies usually arrive within two business days.</p>
+          <p>
+            <input id="msg-subject" name="subject" type="text" required
+                   placeholder="Subject"
+                   toolparamdescription="Short subject line for the message.">
+          </p>
+          <p>
+            <textarea id="msg-body" name="body" rows="4" required
+                      placeholder="Type your message"
+                      toolparamdescription="Full text of the message to the care team."></textarea>
+          </p>
+          <p><button type="submit">Send message</button></p>
+        </div>
+      </form>
+    </div>
+
     <div class="panel" id="msg-list"></div>
   </section>
 </main>
@@ -82,5 +105,6 @@
 </footer>
 
 <script type="module" src="./app.js"></script>
+<script type="module" src="./tools.js"></script>
 </body>
 </html>

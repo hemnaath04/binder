@@ -19,6 +19,7 @@
  */
 
 import { SOURCES, SNAPSHOT_TAKEN_AT, PATIENT } from './snapshot.js';
+import { readAllPortals } from './portals.js';
 
 export { PATIENT };
 
@@ -37,9 +38,11 @@ export const snapshotSource = {
 };
 
 /**
- * Placeholder until day 5. Deliberately reports unavailable rather than
- * throwing, so the selector can fall back cleanly and the interface can say
- * which path it is on.
+ * Live cross-origin reads through the tools each portal publishes.
+ *
+ * Failures surface rather than hide. A portal that cannot be read is reported
+ * so the caregiver knows the picture is incomplete, and if none answer we fall
+ * back to the saved copy rather than showing an empty screen.
  */
 export const webmcpSource = {
   id: 'webmcp',
@@ -49,7 +52,9 @@ export const webmcpSource = {
       && typeof document.modelContext?.getTools === 'function';
   },
   async readAll() {
-    throw new Error('live WebMCP reads are not wired up yet');
+    const { sources, failures } = await readAllPortals();
+    if (failures.length) console.warn('[binder] some portals did not answer:', failures);
+    return sources;
   },
 };
 

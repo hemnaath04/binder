@@ -74,7 +74,7 @@ export function renderAppointments() {
 export function renderMessages() {
   $('#msg-list').innerHTML = MESSAGES.length
     ? MESSAGES.map((m) => `
-        <article class="msg">
+        <article class="msg${m.outbound ? ' outbound' : ''}">
           <header>
             <b>${esc(m.subject)}</b>
             <span class="sig">from ${esc(m.from)}</span>
@@ -86,6 +86,54 @@ export function renderMessages() {
 }
 
 // ----------------------------------------------------------------------- tabs
+
+/**
+ * Send a message to the care team.
+ *
+ * This is the function the Send button calls, and it is the same function the
+ * WebMCP tool calls. There is exactly one code path: a tool must never be able
+ * to do something the interface cannot, or do it differently.
+ */
+export function sendMessage({ subject, body }) {
+  const trimmedSubject = String(subject ?? '').trim();
+  const trimmedBody = String(body ?? '').trim();
+  if (!trimmedSubject) throw new Error('A subject is required.');
+  if (!trimmedBody) throw new Error('A message body is required.');
+
+  const message = {
+    id: `nc-msg-out-${Date.now()}`,
+    from: `${PATIENT.name} (you)`,
+    date: new Date().toISOString().slice(0, 10),
+    subject: trimmedSubject,
+    body: trimmedBody,
+    outbound: true,
+  };
+  MESSAGES.unshift(message);
+  renderMessages();
+  showSentNote(trimmedSubject);
+  return message;
+}
+
+function showSentNote(subject) {
+  const existing = document.querySelector('.sent-note');
+  if (existing) existing.remove();
+  const note = document.createElement('p');
+  note.className = 'sent-note';
+  note.setAttribute('role', 'status');
+  note.textContent = `Sent to the care team: "${subject}". You will get a reply in this portal.`;
+  document.getElementById('msg-list').before(note);
+}
+
+document.getElementById('compose').addEventListener('submit', (event) => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  try {
+    sendMessage({ subject: form.subject.value, body: form.body.value });
+    form.reset();
+  } catch (error) {
+    window.alert(error.message);
+  }
+});
 
 function showTab(name) {
   for (const btn of document.querySelectorAll('nav button')) {

@@ -409,10 +409,37 @@ const RULES = [
  * A finding is only interesting when it draws on more than one source, so the
  * count of contributing sources is attached for the interface to show.
  */
+/**
+ * Collapse evidence rows that say the same thing.
+ *
+ * The pharmacy dispenses what the clinics prescribe, so a single medication
+ * legitimately shows up from two or three sources with identical wording. Nine
+ * rows for the triple whammy, six of them repeats, is worse for a caregiver
+ * reading the card and worse for an agent paying for the tokens. Merging on the
+ * detail text keeps every source named while saying each fact once.
+ */
+function dedupeEvidence(entries) {
+  const merged = new Map();
+  for (const entry of entries) {
+    const existing = merged.get(entry.detail);
+    if (existing) {
+      if (!existing.sources.includes(entry.source)) existing.sources.push(entry.source);
+    } else {
+      merged.set(entry.detail, { detail: entry.detail, sources: [entry.source] });
+    }
+  }
+  return [...merged.values()].map((e) => ({
+    source: e.sources.join(' and '),
+    detail: e.detail,
+    corroboratedBy: e.sources.length,
+  }));
+}
+
 export function findCareConflicts(sources) {
   const findings = RULES.flatMap((rule) => rule(sources));
   for (const finding of findings) {
-    finding.sourceCount = new Set(finding.evidence.map((e) => e.source)).size;
+    finding.evidence = dedupeEvidence(finding.evidence);
+    finding.sourceCount = new Set(finding.evidence.flatMap((e) => e.source.split(' and '))).size;
   }
   return findings.sort((a, b) => {
     const bySeverity = SEVERITY_ORDER[a.severity] - SEVERITY_ORDER[b.severity];

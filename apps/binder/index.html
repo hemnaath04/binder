@@ -23,6 +23,7 @@
       <button type="button" data-tab="ask" aria-selected="true">What to ask<span class="count" id="count-ask"></span></button>
       <button type="button" data-tab="meds" aria-selected="false">Medications<span class="count" id="count-meds"></span></button>
       <button type="button" data-tab="timeline" aria-selected="false">Timeline</button>
+      <button type="button" data-tab="approvals" aria-selected="false">Waiting for you<span class="count" id="count-approvals"></span></button>
       <button type="button" data-tab="sources" aria-selected="false">Sources</button>
     </nav>
   </div>
@@ -59,6 +60,15 @@
     <ul class="timeline" id="timeline"></ul>
   </section>
 
+  <section id="tab-approvals" hidden>
+    <h2>Waiting for you</h2>
+    <p class="lede">
+      Nothing here has been sent. Binder stages every request so you can read exactly
+      what will happen before it reaches a portal.
+    </p>
+    <div id="approvals"></div>
+  </section>
+
   <section id="tab-sources" hidden>
     <h2>Where this came from</h2>
     <p class="lede">
@@ -67,6 +77,22 @@
     </p>
     <div id="sources"></div>
     <div class="banner" id="read-detail"></div>
+
+    <h2 class="sub-head">What your agent can do right now</h2>
+    <p class="lede">
+      Binder publishes these tools to any agent in this browser. The list changes as
+      sources connect and disconnect.
+    </p>
+    <ul class="caps" id="capabilities"><li class="empty">no tools published</li></ul>
+
+    <div class="frames" aria-hidden="true">
+      <h2 class="sub-head">Connected portals</h2>
+      <p class="lede">
+        Each portal runs in its own frame on its own origin, in your signed-in session.
+        Binder reads them through the tools they publish. Nothing is copied to a server.
+      </p>
+      <div id="frames"></div>
+    </div>
   </section>
 </main>
 
