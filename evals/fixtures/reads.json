@@ -1,0 +1,46 @@
+[
+  {
+    "name": "asks what dad is taking",
+    "messages": [{ "role": "user", "content": "What is my dad actually taking right now?" }],
+    "expectedCall": [{ "functionName": "build_medication_list", "arguments": {} }]
+  },
+  {
+    "name": "asks in caregiver phrasing, not product phrasing",
+    "messages": [{ "role": "user", "content": "Can you put all his pills into one list for me? They're spread across three websites." }],
+    "expectedCall": [{ "functionName": "build_medication_list", "arguments": {} }]
+  },
+  {
+    "name": "asks what to raise at the appointment",
+    "messages": [{ "role": "user", "content": "He sees the kidney doctor on Monday. What should I bring up?" }],
+    "expectedCall": [{ "functionName": "prepare_visit_questions", "arguments": {} }]
+  },
+  {
+    "name": "asks whether anything is wrong",
+    "messages": [{ "role": "user", "content": "Is there anything here I should be worried about?" }],
+    "expectedCall": [{ "functionName": "find_care_conflicts", "arguments": {} }]
+  },
+  {
+    "name": "asks only for the urgent items",
+    "messages": [{ "role": "user", "content": "Just the things that need attention soon, not the routine stuff." }],
+    "expectedCall": [{ "functionName": "find_care_conflicts", "arguments": { "severity": "ask_soon" } }]
+  },
+  {
+    "name": "asks why a finding was raised, so must chain",
+    "messages": [
+      { "role": "user", "content": "Is there anything I should be worried about?" },
+      { "role": "assistant", "content": "Three medicines together that are known to strain the kidneys (triple-whammy)." },
+      { "role": "user", "content": "How do you know that? Show me where it came from." }
+    ],
+    "expectedCall": [{ "functionName": "explain_care_conflict", "arguments": { "id": "triple-whammy" } }]
+  },
+  {
+    "name": "asks what happened recently",
+    "messages": [{ "role": "user", "content": "What has happened with his care over the last few months?" }],
+    "expectedCall": [{ "functionName": "get_care_timeline", "arguments": {} }]
+  },
+  {
+    "name": "asks which portals are connected",
+    "messages": [{ "role": "user", "content": "Which of his doctors' sites are you actually reading?" }],
+    "expectedCall": [{ "functionName": "list_connected_sources", "arguments": {} }]
+  }
+]

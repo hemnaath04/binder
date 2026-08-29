@@ -13,11 +13,11 @@
 
 /** Production hostnames. Update here and in each portal's tools.js. */
 export const PROD = {
-  binder: 'https://binder-care.netlify.app',
-  northfield: 'https://northfield-cardiology.netlify.app',
-  stalbans: 'https://stalbans-kidney.netlify.app',
-  wellspring: 'https://wellspring-rx.netlify.app',
-  corbinvalley: 'https://corbinvalley-discharge.netlify.app',
+  binder: 'https://binder-care.vercel.app',
+  northfield: 'https://binder-northfield.vercel.app',
+  stalbans: 'https://binder-stalbans.vercel.app',
+  wellspring: 'https://binder-wellspring.vercel.app',
+  corbinvalley: 'https://binder-corbinvalley.vercel.app',
 };
 
 const LOCAL = {

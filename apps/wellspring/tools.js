@@ -25,7 +25,7 @@ import { requestRefill, daysRemaining } from './app.js';
 const BINDER_ORIGINS = [
   'http://localhost:8090',
   'http://127.0.0.1:8090',
-  'https://binder-care.netlify.app',
+  'https://binder-care.vercel.app',
 ];
 
 const json = (value) => JSON.stringify(value);
