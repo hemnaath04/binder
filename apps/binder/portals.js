@@ -8,6 +8,10 @@
  * own signed-in session. Nothing leaves the page.
  */
 
+import { origins } from './origins.js';
+
+const O = origins();
+
 /**
  * Which tool answers which question, per portal.
  *
@@ -23,7 +27,7 @@ export const PORTALS = [
     id: 'northfield',
     name: 'Northfield Cardiology',
     kind: 'clinic',
-    origin: 'http://localhost:8091',
+    origin: O.northfield,
     reads: {
       medications: 'northfield_list_meds',
       labs: 'northfield_list_labs',
@@ -35,7 +39,7 @@ export const PORTALS = [
     id: 'stalbans',
     name: 'St. Albans Nephrology',
     kind: 'clinic',
-    origin: 'http://localhost:8092',
+    origin: O.stalbans,
     reads: {
       medications: 'stalbans_list_meds',
       labs: 'stalbans_list_labs',
@@ -45,10 +49,22 @@ export const PORTALS = [
     writes: { reschedule: 'stalbans_ask_reschedule' },
   },
   {
+    id: 'corbinvalley',
+    name: 'Corbin Valley Hospital',
+    kind: 'hospital',
+    origin: O.corbinvalley,
+    reads: {
+      discharge: 'corbin_read_discharge',
+      dischargeMedications: 'corbin_list_disch_meds',
+      referrals: 'corbin_list_referrals',
+    },
+    writes: { release: 'corbin_ask_release' },
+  },
+  {
     id: 'wellspring',
     name: 'Wellspring',
     kind: 'pharmacy',
-    origin: 'http://localhost:8093',
+    origin: O.wellspring,
     reads: {
       prescriptions: 'wellspring_list_rx',
       purchases: 'wellspring_list_purchases',
@@ -160,6 +176,18 @@ export async function readAllPortals() {
       source[field] = extract(field, payload);
     }
 
+    /**
+     * Discharge medications are historical: what was started on the day of a
+     * 2023 hospital stay. Treating them as current would double-count drugs the
+     * cardiologist has since been managing, so they are kept out of the
+     * reconciled medication list and exposed as origin context instead.
+     */
+    if (portal.id === 'corbinvalley') {
+      source.medicationOrigins = source.dischargeMedications ?? [];
+      delete source.dischargeMedications;
+      source.medications = [];
+    }
+
     // The pharmacy reports what it dispensed, which is medication data too.
     if (portal.id === 'wellspring') {
       source.medications = (source.prescriptions ?? []).map((rx) => ({
@@ -182,6 +210,10 @@ function extract(field, payload) {
   const direct = payload[field];
   if (Array.isArray(direct)) return direct;
   if (field === 'labs' && Array.isArray(payload.panels)) return payload.panels;
+  if (field === 'dischargeMedications' && Array.isArray(payload.medications)) return payload.medications;
+  if (field === 'referrals' && Array.isArray(payload.referrals)) return payload.referrals;
+  // The discharge summary is a single record, not a list.
+  if (field === 'discharge') return payload;
   return [];
 }
 

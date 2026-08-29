@@ -19,7 +19,7 @@ export const PATIENT = {
   }
 };
 
-export const SNAPSHOT_TAKEN_AT = "2026-08-27T23:28:45.963Z";
+export const SNAPSHOT_TAKEN_AT = "2026-08-28T17:00:11.963Z";
 
 export const SOURCES = [
   {
@@ -382,6 +382,72 @@ export const SOURCES = [
         "body": "Your kidney numbers have moved in the wrong direction since April and your potassium is above range at 5.4. Please avoid anti-inflammatory painkillers such as ibuprofen and naproxen, including the ones sold without a prescription. Bring every medication you take to the September visit, and let me know if any other doctor has started something new."
       }
     ]
+  },
+  {
+    "id": "corbinvalley",
+    "name": "Corbin Valley Hospital",
+    "kind": "hospital",
+    "origin": "http://localhost:8094",
+    "discharge": {
+      "admission": {
+        "admitted": "2023-11-09",
+        "discharged": "2023-11-14",
+        "reasonForVisit": "Chest pain and shortness of breath, three hours in duration",
+        "service": "Inpatient Medicine / Cardiology"
+      },
+      "attending": "Dana Whitfield, MD",
+      "diagnoses": [
+        {
+          "id": "cvh-dx-1",
+          "title": "Non-ST elevation myocardial infarction (NSTEMI)",
+          "detail": "Cardiac catheterization on hospital day 1 found a severe blockage in the left anterior descending artery. A stent was placed and blood flow was restored. This is the finding behind the lifelong statin and beta blocker started at discharge."
+        },
+        {
+          "id": "cvh-dx-2",
+          "title": "Newly noted reduced kidney function",
+          "detail": "Admission creatinine was 1.3 mg/dL, estimated eGFR 52 mL/min/1.73m2, higher than expected for this patient. Nephrology was consulted inpatient, felt this reflected early chronic kidney disease rather than anything acute, and recommended outpatient follow-up rather than any change during this stay."
+        },
+        {
+          "id": "cvh-dx-3",
+          "title": "Hypertension, longstanding",
+          "detail": null
+        }
+      ],
+      "hospitalCourse": "Presented to the emergency department with new chest pain radiating to the left arm. An electrocardiogram and troponin confirmed a non-ST elevation myocardial infarction. Taken for cardiac catheterization the following morning, which found a severe blockage in the left anterior descending artery. A stent was placed and flow was restored without complication. Admission labs also showed a creatinine above the expected range for this patient, prompting an inpatient nephrology consult. Kidney function stayed stable through the remainder of the stay. Recovered without further chest pain, tolerated a cardiac rehabilitation walk on hospital day 4, and was discharged home in stable condition on hospital day 6."
+    },
+    "medicationOrigins": [
+      {
+        "id": "cvh-med-1",
+        "name": "Metoprolol succinate",
+        "strength": "50 mg",
+        "sig": "Take 1 tablet by mouth daily",
+        "reason": "Started for the heart attack and to protect the artery the stent opened."
+      },
+      {
+        "id": "cvh-med-2",
+        "name": "Atorvastatin",
+        "strength": "40 mg",
+        "sig": "Take 1 tablet by mouth at bedtime",
+        "reason": "Started to lower cholesterol and reduce the risk of another heart attack."
+      }
+    ],
+    "referrals": [
+      {
+        "id": "cvh-fu-1",
+        "with": "Cardiology follow-up",
+        "org": "Northfield Cardiology Associates",
+        "clinician": "Imani Osei, MD",
+        "timing": "Within 1 week of discharge"
+      },
+      {
+        "id": "cvh-fu-2",
+        "with": "Nephrology referral",
+        "org": "St. Albans Kidney Care",
+        "clinician": "Assigned at first visit",
+        "timing": "Within 4 weeks of discharge"
+      }
+    ],
+    "medications": []
   },
   {
     "id": "wellspring",

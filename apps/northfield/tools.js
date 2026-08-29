@@ -22,10 +22,18 @@
 
 import { PRACTICE, PATIENT, MEDICATIONS, LABS, APPOINTMENTS, MESSAGES } from './data.js';
 
-/** Origins allowed to see and run these tools. Nothing else can reach them. */
+/**
+ * Origins allowed to see and run these tools. Nothing else can reach them.
+ *
+ * Both environments are listed because `exposedTo` takes an array and this
+ * project has no build step, so there is nothing to substitute at deploy time.
+ * A portal that only trusted localhost would publish nothing in production, and
+ * it would fail silently: registration succeeds, discovery just returns empty.
+ */
 const BINDER_ORIGINS = [
   'http://localhost:8090',
   'http://127.0.0.1:8090',
+  'https://binder-care.netlify.app',
 ];
 
 const json = (value) => JSON.stringify(value);

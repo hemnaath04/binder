@@ -167,8 +167,14 @@ export async function registerBinderTools() {
       const { sources } = readState();
       let findings = findCareConflicts(sources);
       if (severity) findings = findings.filter((f) => f.severity === severity);
+      /**
+       * The question is what the caregiver actually needs, and the title is a
+       * shorter restatement of it, so carrying both cost enough characters to
+       * push two of seven findings out of the budget. Dropping the title fits
+       * all of them. `explain_care_conflict` still returns the full record.
+       */
       return boundedList(findings.map((f) => ({
-        id: f.id, severity: f.severity, title: f.title,
+        id: f.id, severity: f.severity,
         question: f.question, drawsOnSources: f.sourceCount,
       })));
     },

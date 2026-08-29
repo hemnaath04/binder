@@ -21,6 +21,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const northfield = await import(join(root, 'apps/northfield/data.js'));
 const stalbans = await import(join(root, 'apps/stalbans/data.js'));
 const wellspring = await import(join(root, 'apps/wellspring/data.js'));
+const corbinvalley = await import(join(root, 'apps/corbinvalley/data.js'));
 
 /**
  * The patient. Each portal holds its own copy under its own record number,
@@ -58,6 +59,27 @@ const sources = [
     labs: stalbans.LABS,
     appointments: stalbans.APPOINTMENTS,
     messages: stalbans.MESSAGES,
+  },
+  {
+    /**
+     * The hospital record is frozen on its discharge date. Its medications are
+     * historical, so they are carried as origin context rather than as active
+     * medications: counting a 2023 discharge order as current would duplicate
+     * drugs the cardiologist has managed ever since.
+     */
+    id: 'corbinvalley',
+    name: corbinvalley.HOSPITAL.short,
+    kind: 'hospital',
+    origin: 'http://localhost:8094',
+    discharge: {
+      admission: corbinvalley.ADMISSION,
+      attending: corbinvalley.HOSPITAL.attending,
+      diagnoses: corbinvalley.DIAGNOSES,
+      hospitalCourse: corbinvalley.HOSPITAL_COURSE,
+    },
+    medicationOrigins: corbinvalley.DISCHARGE_MEDICATIONS,
+    referrals: corbinvalley.FOLLOW_UP,
+    medications: [],
   },
   {
     id: 'wellspring',
