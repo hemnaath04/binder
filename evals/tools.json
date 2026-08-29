@@ -247,22 +247,19 @@
   {
     "name": "stage_refill_request",
     "origin": "https://binder-care.vercel.app",
-    "description": "Stage a request for Wellspring Pharmacy to refill a prescription. This does NOT send it. The caregiver reviews the request in Binder and approves or rejects it. Returns the staged action id so you can confirm its status with list_staged_actions.",
+    "description": "Stage a request for Wellspring Pharmacy to refill a prescription, naming the medication the way the caregiver said it. This does NOT send it: the caregiver reviews and approves it in Binder. If the name matches more than one prescription the reply lists them so you can ask which one.",
     "inputSchema": {
       "type": "object",
       "properties": {
-        "rxNumber": {
-          "type": "string",
-          "description": "Prescription number, from build_medication_list or the pharmacy."
-        },
         "drug": {
           "type": "string",
-          "description": "Drug name, used to describe the request to the caregiver."
+          "description": "Medication name as the caregiver says it, for example \"sevelamer\"."
+        },
+        "rxNumber": {
+          "type": "string",
+          "description": "Optional prescription number, if one is already known."
         }
       },
-      "required": [
-        "rxNumber"
-      ],
       "additionalProperties": false
     },
     "annotations": {

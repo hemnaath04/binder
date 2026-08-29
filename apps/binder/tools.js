@@ -89,6 +89,37 @@ export function connectState(reader) {
   readState = reader;
 }
 
+/**
+ * Map a medication name to a prescription number.
+ *
+ * Ambiguity is answered with the choices rather than a guess. Spironolactone
+ * genuinely has two prescriptions here from two prescribers, and picking one
+ * silently is exactly the failure the product exists to surface.
+ */
+function resolveByDrugName(drug) {
+  const { sources } = readState();
+  const prescriptions = sources.flatMap((s) => s.prescriptions ?? []);
+  if (!prescriptions.length) {
+    return { problem: 'No pharmacy records are loaded yet.', hint: 'Call list_connected_sources first.' };
+  }
+
+  const needle = String(drug).trim().toLowerCase();
+  const matches = prescriptions.filter((rx) => rx.drug.toLowerCase().includes(needle));
+
+  if (!matches.length) {
+    const known = [...new Set(prescriptions.map((rx) => rx.drug))].join(', ');
+    return { problem: `Nothing on file matching "${drug}".`, hint: `On file: ${known}.` };
+  }
+  if (matches.length > 1) {
+    const options = matches.map((rx) => `${rx.drug} ${rx.strength} from ${rx.prescriber} (Rx ${rx.rxNumber})`);
+    return {
+      problem: `"${drug}" matches ${matches.length} prescriptions, so the caregiver has to choose.`,
+      hint: `Ask which one, then pass its rxNumber: ${options.join('; ')}.`,
+    };
+  }
+  return { rxNumber: matches[0].rxNumber, drug: `${matches[0].drug} ${matches[0].strength}` };
+}
+
 const controller = new AbortController();
 export function unregisterAll() {
   controller.abort();
@@ -259,21 +290,41 @@ export async function registerBinderTools() {
   await add({
     name: 'stage_refill_request',
     description:
-      'Stage a request for Wellspring Pharmacy to refill a prescription. This does NOT send it. ' +
-      'The caregiver reviews the request in Binder and approves or rejects it. Returns the staged ' +
-      'action id so you can confirm its status with list_staged_actions.',
+      'Stage a request for Wellspring Pharmacy to refill a prescription, naming the medication the ' +
+      'way the caregiver said it. This does NOT send it: the caregiver reviews and approves it in ' +
+      'Binder. If the name matches more than one prescription the reply lists them so you can ask ' +
+      'which one.',
     inputSchema: {
       type: 'object',
       properties: {
-        rxNumber: { type: 'string', description: 'Prescription number, from build_medication_list or the pharmacy.' },
-        drug: { type: 'string', description: 'Drug name, used to describe the request to the caregiver.' },
+        drug: {
+          type: 'string',
+          description: 'Medication name as the caregiver says it, for example "sevelamer".',
+        },
+        rxNumber: {
+          type: 'string',
+          description: 'Optional prescription number, if one is already known.',
+        },
       },
-      required: ['rxNumber'],
       additionalProperties: false,
     },
     // Staging is a local state change awaiting a human, not a write to a portal.
     annotations: { readOnlyHint: false, untrustedContentHint: false },
     execute: async ({ rxNumber, drug }) => {
+      /**
+       * A caregiver says "refill his sevelamer", never "refill Rx 4390045", and
+       * no read tool exposes prescription numbers, so requiring one made the
+       * most natural request in the product impossible to satisfy. Resolving
+       * the name here is what Chrome's guidance means by accepting raw user
+       * input instead of making the model do the lookup.
+       */
+      if (!rxNumber) {
+        if (!drug) return failure('No medication named.', 'Say which medication needs refilling.');
+        const resolved = resolveByDrugName(drug);
+        if (resolved.problem) return failure(resolved.problem, resolved.hint);
+        rxNumber = resolved.rxNumber;
+        drug = resolved.drug;
+      }
       if (!/^\d{4,10}$/.test(String(rxNumber))) {
         return failure(`"${rxNumber}" is not a prescription number.`,
           'Use the Rx number from the pharmacy, which is 4 to 10 digits.');
