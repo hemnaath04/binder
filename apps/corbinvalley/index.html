@@ -8,8 +8,9 @@
 <link rel="stylesheet" href="./style.css">
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 <header class="masthead">
-  <b>Corbin Valley Discharge Record</b>
+  <h1>Corbin Valley Discharge Record</h1>
   <span>Corbin Valley Hospital</span>
   <span class="spacer"></span>
   <span id="signed-in">Signed in</span>
@@ -31,7 +32,7 @@
   <button type="button" data-tab="followup" aria-selected="false">Follow-up care</button>
 </nav>
 
-<main>
+<main id="main">
   <section id="tab-summary">
     <h2>Reason for admission</h2>
     <div class="panel"><div class="body"><p id="reason-visit"></p></div></div>
@@ -88,9 +89,11 @@
                    placeholder="Provider or organization name">
           </p>
           <p>
+            <label for="release-note">Note (optional)</label>
             <textarea id="release-note" name="note" rows="3"
                       placeholder="Optional note for the records office"></textarea>
           </p>
+          <p class="form-error" id="release-error" role="alert" hidden></p>
           <p><button type="submit">Request release</button></p>
         </div>
       </form>
@@ -107,5 +110,6 @@
 </footer>
 
 <script type="module" src="./app.js"></script>
+<script type="module" src="./tools.js"></script>
 </body>
 </html>

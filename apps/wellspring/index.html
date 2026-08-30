@@ -8,8 +8,9 @@
 <link rel="stylesheet" href="./style.css">
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 <header class="masthead">
-  <b>Wellspring Rx</b>
+  <h1>Wellspring Rx</h1>
   <span>Prescription and purchase history</span>
   <span class="spacer"></span>
   <span id="signed-in">Signed in</span>
@@ -25,11 +26,12 @@
   <button type="button" data-tab="alerts" aria-selected="false">Safety notices</button>
 </nav>
 
-<main>
+<main id="main">
   <section id="tab-prescriptions">
     <h2>Active prescriptions</h2>
     <div id="rx-list"></div>
     <p class="note" id="refill-note" hidden role="status"></p>
+    <p class="form-error" id="refill-error" role="alert" hidden></p>
     <p class="note">
       Wellspring fills prescriptions written by any prescriber. Two prescribers
       may have written for the same medication without either of them knowing.
@@ -64,7 +66,7 @@
 <footer>
   <p>
     <strong>Fictional portal.</strong> Wellspring Pharmacy does not exist and every
-    record here is fabricated. Built as one of three independent origins for a WebMCP
+    record here is fabricated. Built as one of four independent origins for a WebMCP
     demonstration. See the project DISCLAIMER.
   </p>
 </footer>

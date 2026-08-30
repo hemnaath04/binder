@@ -4,6 +4,23 @@
 
 Built for [The WebMCP Challenge](https://webmcp.devpost.com/).
 
+## Try it
+
+| | |
+| --- | --- |
+| **Binder** | **https://binder-care.vercel.app** |
+| Northfield Cardiology | https://binder-northfield.vercel.app |
+| St. Albans Kidney Care | https://binder-stalbans.vercel.app |
+| Wellspring Pharmacy | https://binder-wellspring.vercel.app |
+| Corbin Valley Hospital | https://binder-corbinvalley.vercel.app |
+
+No login. Open Binder and it works immediately.
+
+**To see the WebMCP tools**, use one of:
+
+- **Chrome 149 or newer.** Set `chrome://flags/#enable-webmcp-testing` to Enabled and relaunch. Registered tools appear in DevTools under Application. The [Model Context Tool Inspector](https://chromewebstore.google.com/detail/model-context-tool-inspec/gbpdfapgefenggkahomfgkhfehlcenpd) extension lets you call them by hand. **Everything works on this path, including live cross-origin reads.**
+- **ChatGPT desktop app**, built-in browser, on GPT-5.6 Sol or Terra. Site tools are disabled in Enterprise and Edu workspaces. Open the Site tools panel in the address bar to see what Binder publishes. **Cross-origin reads do not work in this browser** (see Known limits below), so Binder serves its saved copy and every tool still answers.
+
 > **Not a medical device, and not medical advice.** Binder reconciles information a caregiver already has access to and produces *questions to ask a clinician*. It does not diagnose and does not recommend treatment. All data in this repository is fabricated. See [DISCLAIMER.md](./DISCLAIMER.md).
 
 ## The problem
@@ -22,7 +39,7 @@ She is also the only person who can see all three at once. In this fixture that 
 | Spironolactone from *two* prescribers | **Wellspring only.** Neither practice knows the other wrote for it |
 | Potassium 5.4 and rising, eGFR 31 and falling | **St. Albans only.** The cardiologist who added spironolactone cannot see either |
 
-No single screen in this repository shows a problem. The union of three screens shows two.
+No single screen in this repository shows a problem. The union of four screens shows several.
 
 ## Why this had to be WebMCP
 
@@ -32,7 +49,7 @@ The only place all three sessions coexist is the caregiver's own browser, under 
 
 ## Architecture
 
-Four independent origins. The host is a **broker**: it discovers tools published by origins that have no relationship with each other, runs them through its own in-page agent, and re-registers a curated subset as its own tools so a browser agent sees one coherent list instead of three disconnected sites.
+Five independent origins, four portals and a host. The host is a **broker**: it discovers tools published by origins that have no relationship with each other, runs them through its own in-page agent, and re-registers a curated subset as its own tools so a browser agent sees one coherent list instead of four disconnected sites.
 
 ```
 binder.<host>                      host, top-level document
@@ -82,26 +99,69 @@ No build step, on purpose. Every file is served exactly as written, so the code 
 
 ## The tool surface
 
-24 tools across four origins, all verified registering and executing in Chrome 152.
+26 tools across five origins, captured from the deployed sites into `evals/tools.json` and checked by `evals/run.mjs`.
 
-| Origin | Tools | Kind |
-| --- | --- | --- |
-| Northfield Cardiology | `northfield_list_meds`, `northfield_list_labs`, `northfield_list_visits`, `northfield_read_messages` | read |
-| Northfield Cardiology | `northfield_send_message` | **declarative**, synthesised from the compose form |
-| St. Albans Kidney Care | `stalbans_list_meds`, `stalbans_list_labs`, `stalbans_list_visits`, `stalbans_read_messages` | read |
-| St. Albans Kidney Care | `stalbans_ask_reschedule` | write |
-| Wellspring Pharmacy | `wellspring_list_rx`, `wellspring_list_purchases`, `wellspring_list_alerts` | read |
-| Wellspring Pharmacy | `wellspring_ask_refill` | write |
-| **Binder (broker)** | `list_connected_sources`, `build_medication_list`, `find_care_conflicts`, `explain_care_conflict`, `get_care_timeline`, `prepare_visit_questions`, `list_staged_actions` | read |
-| **Binder (broker)** | `stage_refill_request`, `stage_reschedule_ask` | stage only, never send |
+| Origin | Tool | Kind | Annotations |
+| --- | --- | --- | --- |
+| Binder (broker) | `build_medication_list` | read | `readOnlyHint` `untrustedContentHint` |
+| Binder (broker) | `explain_care_conflict` | read | `readOnlyHint` `untrustedContentHint` |
+| Binder (broker) | `find_care_conflicts` | read | `readOnlyHint` `untrustedContentHint` |
+| Binder (broker) | `get_care_timeline` | read | `readOnlyHint` `untrustedContentHint` |
+| Binder (broker) | `list_connected_sources` | read | `readOnlyHint` |
+| Binder (broker) | `list_staged_actions` | read | `readOnlyHint` |
+| Binder (broker) | `prepare_visit_questions` | read | `readOnlyHint` `untrustedContentHint` |
+| Binder (broker) | `stage_refill_request` | write | none |
+| Binder (broker) | `stage_reschedule_ask` | write | none |
+| Northfield Cardiology | `northfield_list_labs` | read | `readOnlyHint` `untrustedContentHint` |
+| Northfield Cardiology | `northfield_list_meds` | read | `readOnlyHint` `untrustedContentHint` |
+| Northfield Cardiology | `northfield_list_visits` | read | `readOnlyHint` |
+| Northfield Cardiology | `northfield_read_messages` | read | `readOnlyHint` `untrustedContentHint` |
+| St. Albans Kidney Care | `stalbans_ask_reschedule` | write | none |
+| St. Albans Kidney Care | `stalbans_list_labs` | read | `readOnlyHint` `untrustedContentHint` |
+| St. Albans Kidney Care | `stalbans_list_meds` | read | `readOnlyHint` `untrustedContentHint` |
+| St. Albans Kidney Care | `stalbans_list_visits` | read | `readOnlyHint` |
+| St. Albans Kidney Care | `stalbans_read_messages` | read | `readOnlyHint` `untrustedContentHint` |
+| Wellspring Pharmacy | `wellspring_ask_refill` | write | none |
+| Wellspring Pharmacy | `wellspring_list_alerts` | read | `readOnlyHint` `untrustedContentHint` |
+| Wellspring Pharmacy | `wellspring_list_purchases` | read | `readOnlyHint` `untrustedContentHint` |
+| Wellspring Pharmacy | `wellspring_list_rx` | read | `readOnlyHint` `untrustedContentHint` |
+| Corbin Valley Hospital | `corbin_ask_release` | write | none |
+| Corbin Valley Hospital | `corbin_list_disch_meds` | read | `readOnlyHint` `untrustedContentHint` |
+| Corbin Valley Hospital | `corbin_list_referrals` | read | `readOnlyHint` `untrustedContentHint` |
+| Corbin Valley Hospital | `corbin_read_discharge` | read | `readOnlyHint` `untrustedContentHint` |
 
-Portal tools are published to the Binder origin alone, via `exposedTo`. Binder discovers them with `getTools({ fromOrigins })`, calls them with `executeTool`, and re-registers a curated set as its own, so a browser agent sees one coherent list of nine rather than three disconnected sites with fifteen tools between them.
+Portal tools are published to the Binder origin alone via `exposedTo`. Binder discovers them with `getTools({ fromOrigins })`, calls them with `executeTool`, and re-registers a curated set of nine as its own, so a browser agent sees one coherent list rather than four disconnected sites with seventeen tools between them.
+
+Northfield also publishes a **declarative** tool, synthesised by the browser from the `toolname` and `tooldescription` attributes on its compose form. It appears on that origin's own tool list but not in the broker's cross-origin discovery, which is consistent with declarative registration and `exposedTo` still being an open question in the spec.
 
 ### What is deliberately not built
 
-**There is no `approve_staged_action` tool, and there will not be one.** An agent that can approve its own writes is not gated. Approval is reachable only from a human click handler in the page. Saying what we refused to build is a stronger signal than the tool count.
+**There is no `approve_staged_action` tool, and there will not be one.** An agent that can approve its own writes is not gated. Approval is reachable only from a human click handler in the page, and `evals/run.mjs` fails the build if any tool matching `/approve|confirm_send|send_staged/` ever appears.
+
+**The broker never re-publishes a portal's write tool unchanged.** An eval check enforces that too.
 
 **No tool returns a clinical conclusion.** `find_care_conflicts` returns questions with the evidence behind them.
+
+## Known limits, stated plainly
+
+**Cross-origin federation does not work in the ChatGPT desktop app's built-in browser.** `getTools({ fromOrigins })` never resolves there, so checks 7 through 13 of our proof harness fail or are unsupported. In Chrome 152 with the native flag the same 13 checks all pass.
+
+Binder is built to survive it. `boot()` renders the saved copy first and only then attempts the live read, so on the ChatGPT path a caregiver sees the full picture immediately, the live attempt fails in the background, and all nine broker tools keep answering from the saved copy.
+
+So the honest claim is: **every capability works on both paths; live cross-origin reads work in Chrome and fall back to the last saved read elsewhere.**
+
+`toolchange` binding also fails in that browser with `mc.addEventListener is not a function`. Binder binds it with an optional call, so the method's absence degrades silently and only costs the live capability panel.
+
+Full measurements are in the planning repo at `research/05-browser-matrix.md`.
+
+## Tests
+
+```
+npm test              # 16 deterministic tests over the reconciliation engine
+node evals/run.mjs    # 13 eval fixtures plus tool-surface checks
+```
+
+The engine is pure functions with no model involved, so it gets ordinary deterministic tests. The evals cover the separate question of whether an agent picks the right tool, which is probabilistic. `evals/run.mjs` runs the half that can be checked without a model: schema conformance, the approval gate being unreachable, character budgets, honest annotations, and confusable descriptions.
 
 ## Design notes
 

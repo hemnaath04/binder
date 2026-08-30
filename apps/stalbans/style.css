@@ -57,3 +57,35 @@ footer strong { color: var(--high); }
   border: 1px solid var(--line); background: #fff; color: var(--brand); border-radius: 999px;
 }
 .card button:hover { border-color: var(--brand); background: var(--accent); }
+
+.masthead h1 { font-size: 15px; margin: 0; font-weight: 700; }
+
+/* Skip link. Off screen until focused, then anchored top left over everything. */
+.skip {
+  position: absolute; left: -9999px; top: 0; z-index: 100;
+  padding: 10px 16px; background: #111; color: #fff; text-decoration: none;
+  border-radius: 0 0 6px 0; font-weight: 600;
+}
+.skip:focus { left: 0; }
+
+/* Panels take focus, so they need a ring, but not a permanent border. */
+[role="tabpanel"]:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+
+/* Inline validation. Announced via role="alert" and tied to the field with
+   aria-describedby, so the message is never colour alone. */
+.form-error {
+  margin: 0 0 10px; padding: 8px 12px; font-size: 13px; font-weight: 600;
+  border-left: 3px solid #a8321f; background: #fdf1ec; color: #7d2412;
+}
+.form-error::before { content: "Error: "; }
+label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 3px; }
+[aria-invalid="true"] { outline: 2px solid #a8321f; outline-offset: 1px; }
+
+.reschedule-form { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
+.reschedule-form textarea {
+  font: inherit; width: 100%; max-width: 420px; padding: 6px 8px;
+  border: 1px solid var(--line); border-radius: 6px; resize: vertical;
+}
+.reschedule-form .row { display: flex; gap: 8px; margin: 10px 0 0; }
+.card button.secondary { color: var(--muted); }
+.card button.secondary:hover { border-color: var(--muted); background: #fff; }

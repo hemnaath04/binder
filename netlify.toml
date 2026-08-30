@@ -1,0 +1,5 @@
+# Root config for local `netlify dev` only. Each app deploys as its own Netlify
+# site from its own directory, because four separate origins is the point of the
+# project and one site is one origin.
+[build]
+  publish = "apps/binder"

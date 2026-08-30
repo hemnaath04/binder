@@ -1,0 +1,447 @@
+[
+  {
+    "name": "build_medication_list",
+    "origin": "https://binder-care.vercel.app",
+    "description": "Build one reconciled medication list across every connected portal, grouped by ingredient rather than by product name, so the same drug written differently by two practices appears once. Each entry names the source and prescriber it came from. Returns { total, returned, items }.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "untrustedContentHint": true
+    }
+  },
+  {
+    "name": "corbin_ask_release",
+    "origin": "https://binder-corbinvalley.vercel.app",
+    "description": "Ask the Corbin Valley medical records office to send a copy of this discharge record to another provider. Records a request for the records office, who send a copy within five business days.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "recipient": {
+          "type": "string",
+          "description": "Name of the practice or clinician who should receive the record."
+        },
+        "note": {
+          "type": "string",
+          "description": "Optional short note explaining the request."
+        }
+      },
+      "required": [
+        "recipient"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "untrustedContentHint": false
+    }
+  },
+  {
+    "name": "corbin_list_disch_meds",
+    "origin": "https://binder-corbinvalley.vercel.app",
+    "description": "List the medications started at discharge from this hospital stay, each with the reason it was started. These are the origin of medications that appear on the cardiology list with no explanation. Historical, not a current medication list.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "untrustedContentHint": true
+    }
+  },
+  {
+    "name": "corbin_list_referrals",
+    "origin": "https://binder-corbinvalley.vercel.app",
+    "description": "List the follow-up referrals made at discharge, naming which outpatient practices the patient was sent to and how soon each visit was meant to happen. Shows where the cardiology and nephrology relationships came from.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "untrustedContentHint": true
+    }
+  },
+  {
+    "name": "corbin_read_discharge",
+    "origin": "https://binder-corbinvalley.vercel.app",
+    "description": "Read the discharge summary from the hospital stay that started this patient’s cardiac and kidney care, including the reason for admission, the diagnoses made, and the hospital course. Explains why the patient sees both a cardiologist and a nephrologist.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "untrustedContentHint": true
+    }
+  },
+  {
+    "name": "explain_care_conflict",
+    "origin": "https://binder-care.vercel.app",
+    "description": "Return the full evidence behind one finding from find_care_conflicts, including every source record that contributed and any clinical references.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Finding id from find_care_conflicts, such as triple-whammy."
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "untrustedContentHint": true
+    }
+  },
+  {
+    "name": "find_care_conflicts",
+    "origin": "https://binder-care.vercel.app",
+    "description": "Find things worth raising with a clinician that need information from more than one portal, such as the same drug from two prescribers, interactions involving something bought without a prescription, or a lab result the prescribing doctor cannot see. Returns a question and the evidence behind it, never a diagnosis or a treatment recommendation. Returns { total, returned, items }.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "severity": {
+          "type": "string",
+          "enum": [
+            "ask_soon",
+            "ask_at_next_visit",
+            "informational"
+          ],
+          "description": "Optional. Return only findings at this level of urgency."
+        }
+      },
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "untrustedContentHint": true
+    }
+  },
+  {
+    "name": "get_care_timeline",
+    "origin": "https://binder-care.vercel.app",
+    "description": "Return appointments, lab draws, prescription fills and counter purchases from every portal merged into one chronology, newest first. Returns { total, returned, items }.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "type": "number",
+          "description": "Optional. How many events to return. Defaults to 12."
+        }
+      },
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "untrustedContentHint": true
+    }
+  },
+  {
+    "name": "list_connected_sources",
+    "origin": "https://binder-care.vercel.app",
+    "description": "List the care portals Binder is reading, with the name, kind, origin and when each was last read. Call this first to know what the other answers are based on.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "untrustedContentHint": false
+    }
+  },
+  {
+    "name": "list_staged_actions",
+    "origin": "https://binder-care.vercel.app",
+    "description": "List actions waiting for the caregiver to approve, plus those already sent, rejected or failed. Call this after staging something to confirm it is pending. Returns { total, returned, items }.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "untrustedContentHint": false
+    }
+  },
+  {
+    "name": "northfield_list_labs",
+    "origin": "https://binder-northfield.vercel.app",
+    "description": "List test results ordered by Northfield Cardiology, with values, units, reference ranges and which results fall outside range. This practice orders cardiac tests only.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "untrustedContentHint": true
+    }
+  },
+  {
+    "name": "northfield_list_meds",
+    "origin": "https://binder-northfield.vercel.app",
+    "description": "List the medications Northfield Cardiology has prescribed for this patient, with strength, instructions, drug class and prescriber. Covers this cardiology practice only.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "untrustedContentHint": true
+    }
+  },
+  {
+    "name": "northfield_list_visits",
+    "origin": "https://binder-northfield.vercel.app",
+    "description": "List scheduled appointments at Northfield Cardiology, with date, time, visit type and location.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "untrustedContentHint": false
+    }
+  },
+  {
+    "name": "northfield_read_messages",
+    "origin": "https://binder-northfield.vercel.app",
+    "description": "Read the message thread between this patient and the Northfield Cardiology care team, newest first.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "untrustedContentHint": true
+    }
+  },
+  {
+    "name": "prepare_visit_questions",
+    "origin": "https://binder-care.vercel.app",
+    "description": "Return the printable list of questions to take to the next appointment, in the order worth raising them, each with the evidence that produced it. Returns { total, returned, items }.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "untrustedContentHint": true
+    }
+  },
+  {
+    "name": "stage_refill_request",
+    "origin": "https://binder-care.vercel.app",
+    "description": "Stage a request for Wellspring Pharmacy to refill a prescription, naming the medication the way the caregiver said it. This does NOT send it: the caregiver reviews and approves it in Binder. If the name matches more than one prescription the reply lists them so you can ask which one.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "drug": {
+          "type": "string",
+          "description": "Medication name as the caregiver says it, for example \"sevelamer\"."
+        },
+        "rxNumber": {
+          "type": "string",
+          "description": "Optional prescription number, if one is already known."
+        }
+      },
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "untrustedContentHint": false
+    }
+  },
+  {
+    "name": "stage_reschedule_ask",
+    "origin": "https://binder-care.vercel.app",
+    "description": "Stage a request for St. Albans Kidney Care to move an appointment. This does NOT send it. The caregiver reviews it in Binder and approves or rejects it.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "appointmentId": {
+          "type": "string",
+          "description": "Appointment id, such as sa-appt-2."
+        },
+        "reason": {
+          "type": "string",
+          "description": "Optional short reason, such as a clash with another visit."
+        }
+      },
+      "required": [
+        "appointmentId"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "untrustedContentHint": false
+    }
+  },
+  {
+    "name": "stalbans_ask_reschedule",
+    "origin": "https://binder-stalbans.vercel.app",
+    "description": "Ask St. Albans Kidney Care to move an appointment to a different time. This records a request for the scheduling team, who will call back with options. The original appointment stands until they do.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "appointmentId": {
+          "type": "string",
+          "description": "Appointment id from stalbans_list_visits, for example sa-appt-2."
+        },
+        "reason": {
+          "type": "string",
+          "description": "Optional short reason, such as a clash with another appointment."
+        }
+      },
+      "required": [
+        "appointmentId"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "untrustedContentHint": false
+    }
+  },
+  {
+    "name": "stalbans_list_labs",
+    "origin": "https://binder-stalbans.vercel.app",
+    "description": "List kidney function and metabolic panel results from St. Albans Kidney Care, oldest to newest, with values, units, reference ranges and which results are outside range. Includes potassium, creatinine and eGFR. No other practice receives these results.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "analyte": {
+          "type": "string",
+          "description": "Optional. Return only this analyte, for example Potassium or eGFR."
+        }
+      },
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "untrustedContentHint": true
+    }
+  },
+  {
+    "name": "stalbans_list_meds",
+    "origin": "https://binder-stalbans.vercel.app",
+    "description": "List the medications St. Albans Kidney Care has prescribed, with strength, instructions, drug class and prescriber. Covers this nephrology practice only.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "untrustedContentHint": true
+    }
+  },
+  {
+    "name": "stalbans_list_visits",
+    "origin": "https://binder-stalbans.vercel.app",
+    "description": "List scheduled visits at St. Albans Kidney Care, with date, time, visit type, location and whether a reschedule has already been requested.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "untrustedContentHint": false
+    }
+  },
+  {
+    "name": "stalbans_read_messages",
+    "origin": "https://binder-stalbans.vercel.app",
+    "description": "Read messages from the St. Albans Kidney Care team, newest first.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "untrustedContentHint": true
+    }
+  },
+  {
+    "name": "wellspring_ask_refill",
+    "origin": "https://binder-wellspring.vercel.app",
+    "description": "Ask Wellspring Pharmacy to refill a prescription. If refills remain it is prepared for pickup. If none remain, Wellspring contacts the prescriber for authorisation first.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "rxNumber": {
+          "type": "string",
+          "description": "Prescription number from wellspring_list_rx, for example 4471902."
+        }
+      },
+      "required": [
+        "rxNumber"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "untrustedContentHint": false
+    }
+  },
+  {
+    "name": "wellspring_list_alerts",
+    "origin": "https://binder-wellspring.vercel.app",
+    "description": "List safety notices Wellspring generated from dispensing records. Wellspring does not receive laboratory results, so these notices cannot account for kidney function or electrolyte values.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "untrustedContentHint": true
+    }
+  },
+  {
+    "name": "wellspring_list_purchases",
+    "origin": "https://binder-wellspring.vercel.app",
+    "description": "List items bought at the Wellspring counter without a prescription, with date and category. These purchases are not reported to any prescriber and appear in no clinical record, so this is the only place over-the-counter medicines can be seen.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "untrustedContentHint": true
+    }
+  },
+  {
+    "name": "wellspring_list_rx",
+    "origin": "https://binder-wellspring.vercel.app",
+    "description": "List active prescriptions on file at Wellspring Pharmacy, with drug, strength, prescriber, last fill date, days of supply remaining and refills left. Wellspring fills prescriptions from any prescriber, so this covers every doctor treating the patient.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "untrustedContentHint": true
+    }
+  }
+]

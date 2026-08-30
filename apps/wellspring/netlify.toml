@@ -1,0 +1,24 @@
+# WebMCP requires an origin-isolated document. If this header is missing or
+# flipped to ?0, `document.modelContext` disappears and every tool silently
+# stops existing, with no error anywhere. Sending it explicitly means a later
+# config change cannot switch the API off by accident.
+#
+# Netlify's own WebMCP starter calls this out, and it is the single cheapest way
+# to lose the whole project.
+
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Origin-Agent-Cluster = "?1"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# ES modules must be served with a JavaScript MIME type or the browser refuses
+# to execute them, which would take the tools down without touching the code.
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Content-Type = "text/javascript; charset=utf-8"
