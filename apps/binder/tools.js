@@ -132,7 +132,7 @@ export async function registerBinderTools() {
   const opts = { signal: controller.signal };
   const names = [];
   const add = async (tool) => {
-    await mc.registerTool(tool, opts);
+    await document.modelContext.registerTool(tool, opts);
     names.push(tool.name);
   };
 

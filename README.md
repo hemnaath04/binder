@@ -97,6 +97,32 @@ node tools/make-snapshot.mjs    # regenerate the host's saved copy of the portal
 
 No build step, on purpose. Every file is served exactly as written, so the code in DevTools is the code on disk. `localhost` is a secure context, so three ports are three genuine origins and cross-origin federation is testable with no deployment.
 
+## How WebMCP is used
+
+A portal publishes a tool to the Binder origin and nowhere else. This is `apps/wellspring/tools.js`, the read that makes the over-the-counter ibuprofen visible at all:
+
+```js
+await document.modelContext.registerTool({
+  name: 'wellspring_list_purchases',
+  description:
+    'List items bought at the Wellspring counter without a prescription, with date and category. ' +
+    'These purchases are not reported to any prescriber and appear in no clinical record, so this ' +
+    'is the only place over-the-counter medicines can be seen.',
+  inputSchema: { type: 'object', properties: {}, additionalProperties: false },
+  annotations: { readOnlyHint: true, untrustedContentHint: true },
+  execute: async () => json({ source: PHARMACY.short, purchases: COUNTER_PURCHASES }),
+}, { exposedTo: ['https://binder-care.vercel.app'] });
+```
+
+Binder discovers it across origins and calls it:
+
+```js
+const tools = await document.modelContext.getTools({ fromOrigins: [portal.origin] });
+const result = await document.modelContext.executeTool(tool, JSON.stringify(args), { signal });
+```
+
+Then re-registers a curated capability of its own, so a browser agent sees one list rather than four sites.
+
 ## The tool surface
 
 26 tools across five origins, captured from the deployed sites into `evals/tools.json` and checked by `evals/run.mjs`.
