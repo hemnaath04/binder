@@ -42,5 +42,59 @@
     "name": "asks which portals are connected",
     "messages": [{ "role": "user", "content": "Which of his doctors' sites are you actually reading?" }],
     "expectedCall": [{ "functionName": "list_connected_sources", "arguments": {} }]
+  },
+  {
+    "name": "asks why he sees two specialists at all",
+    "messages": [{ "role": "user", "content": "Why does he even have a cardiologist and a kidney doctor? How did that start?" }],
+    "expectedCall": [{ "functionName": "corbin_read_discharge", "arguments": {} }]
+  },
+  {
+    "name": "asks about the hospital stay in roundabout caregiver phrasing",
+    "messages": [{ "role": "user", "content": "Can you dig up whatever happened that one time he was in the hospital, before any of this?" }],
+    "expectedCall": [{ "functionName": "corbin_read_discharge", "arguments": {} }]
+  },
+  {
+    "name": "asks about his health lately, must not reach for the frozen discharge record",
+    "messages": [{ "role": "user", "content": "What's been going on with his health lately?" }],
+    "expectedCall": [{ "functionName": "get_care_timeline", "arguments": {} }],
+    "mustNotCall": ["corbin_read_discharge"],
+    "why": "The discharge record is frozen as of 2023 and its own description says so. \"Lately\" means the live timeline, not a two-year-old summary.",
+    "failureMode": "wrong tool chosen"
+  },
+  {
+    "name": "asks what he was put on when he left the hospital",
+    "messages": [{ "role": "user", "content": "What medications was he actually put on when he left the hospital?" }],
+    "expectedCall": [{ "functionName": "corbin_list_disch_meds", "arguments": {} }]
+  },
+  {
+    "name": "asks in plain caregiver phrasing, not chart phrasing",
+    "messages": [{ "role": "user", "content": "What did they give him when he left, back then?" }],
+    "expectedCall": [{ "functionName": "corbin_list_disch_meds", "arguments": {} }]
+  },
+  {
+    "name": "asks specifically for the discharge medication list, must not reach for the whole narrative",
+    "messages": [{ "role": "user", "content": "Just the list of what he left the hospital on, not the whole story." }],
+    "expectedCall": [{ "functionName": "corbin_list_disch_meds", "arguments": {} }],
+    "mustNotCall": ["corbin_read_discharge"],
+    "why": "corbin_read_discharge returns the full hospital course narrative. A request for a plain list deserves a plain list, not the more verbose tool.",
+    "failureMode": "wrong tool chosen, which here would also produce an over-verbose answer"
+  },
+  {
+    "name": "asks which doctors the hospital referred him to",
+    "messages": [{ "role": "user", "content": "Which doctors did the hospital send him to after he got out?" }],
+    "expectedCall": [{ "functionName": "corbin_list_referrals", "arguments": {} }]
+  },
+  {
+    "name": "asks who he was supposed to follow up with, awkward phrasing",
+    "messages": [{ "role": "user", "content": "Who was he meant to go see afterward, once he was discharged?" }],
+    "expectedCall": [{ "functionName": "corbin_list_referrals", "arguments": {} }]
+  },
+  {
+    "name": "asks when his next nephrology visit is, must not reach for the stale referral window",
+    "messages": [{ "role": "user", "content": "When is his next appointment with the kidney doctor?" }],
+    "expectedCall": [{ "functionName": "stalbans_list_visits", "arguments": {} }],
+    "mustNotCall": ["corbin_list_referrals"],
+    "why": "corbin_list_referrals only says a referral was made within four weeks of a 2023 discharge. It carries no scheduled date and is not the current calendar.",
+    "failureMode": "wrong tool chosen"
   }
 ]
