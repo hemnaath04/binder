@@ -8,8 +8,9 @@
 <link rel="stylesheet" href="./style.css">
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 <header class="masthead">
-  <b>NorthfieldConnect</b>
+  <h1>NorthfieldConnect</h1>
   <span>Northfield Cardiology Associates</span>
   <span class="spacer"></span>
   <span id="signed-in">Signed in</span>
@@ -29,7 +30,7 @@
   <button type="button" data-tab="messages" aria-selected="false">Messages</button>
 </nav>
 
-<main>
+<main id="main">
   <section id="tab-medications">
     <h2>Current medications</h2>
     <div class="panel">
@@ -78,15 +79,17 @@
           <h3><label for="msg-subject">New message to your care team</label></h3>
           <p class="sig">Replies usually arrive within two business days.</p>
           <p>
+            <label for="msg-subject">Subject</label>
             <input id="msg-subject" name="subject" type="text" required
-                   placeholder="Subject"
+                   autocomplete="off"
                    toolparamdescription="Short subject line for the message.">
           </p>
           <p>
+            <label for="msg-body">Message</label>
             <textarea id="msg-body" name="body" rows="4" required
-                      placeholder="Type your message"
                       toolparamdescription="Full text of the message to the care team."></textarea>
           </p>
+          <p class="form-error" id="compose-error" role="alert" hidden></p>
           <p><button type="submit">Send message</button></p>
         </div>
       </form>
@@ -99,7 +102,7 @@
 <footer>
   <p>
     <strong>Fictional portal.</strong> Northfield Cardiology Associates does not exist and
-    every record here is fabricated. Built as one of three independent origins for a
+    every record here is fabricated. Built as one of four independent origins for a
     WebMCP demonstration. See the project DISCLAIMER.
   </p>
 </footer>

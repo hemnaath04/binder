@@ -96,8 +96,10 @@ export function mountPortals(container) {
   mounted = Promise.all(PORTALS.map((portal) => new Promise((resolve) => {
     const frame = document.createElement('iframe');
     frame.title = portal.name;
-    frame.setAttribute('aria-hidden', 'true');
-    frame.tabIndex = -1;
+    // `inert` rather than aria-hidden: aria-hidden alone leaves the iframe's
+    // contents reachable by Tab, which strands a keyboard user inside a copy of
+    // a portal they can already open directly.
+    frame.inert = true;
     // The Permissions Policy allowlist takes an origin. Without this the child
     // cannot register tools at all and every read returns nothing.
     frame.allow = `tools ${portal.origin}`;

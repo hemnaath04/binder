@@ -223,19 +223,78 @@ function renderSources() {
 
 // --------------------------------------------------------------------- tabs
 
-function showTab(name) {
-  for (const btn of document.querySelectorAll('nav button')) {
-    btn.setAttribute('aria-selected', String(btn.dataset.tab === name));
+/**
+ * Tabs, following the ARIA authoring practices.
+ *
+ * The roles are applied here rather than in the markup because the widget only
+ * exists once this script runs. Without JavaScript these are ordinary buttons
+ * and every panel is visible, which is a worse layout but not a broken page.
+ *
+ * The previous version put `aria-selected` on plain buttons. That attribute is
+ * only meaningful on a `tab`, `option`, `row` or `gridcell`, so a screen reader
+ * announced five buttons with no indication of which one was current, and
+ * arrow keys did nothing.
+ */
+function setUpTabs() {
+  const tablist = document.querySelector('nav');
+  if (!tablist) return;
+
+  const tabs = [...tablist.querySelectorAll('button[data-tab]')];
+  if (!tabs.length) return;
+
+  tablist.setAttribute('role', 'tablist');
+
+  const panelFor = (name) => document.getElementById(`tab-${name}`);
+
+  for (const tab of tabs) {
+    const name = tab.dataset.tab;
+    const panel = panelFor(name);
+    tab.id = `tabbtn-${name}`;
+    tab.setAttribute('role', 'tab');
+    tab.setAttribute('type', 'button');
+    if (panel) {
+      tab.setAttribute('aria-controls', panel.id);
+      panel.setAttribute('role', 'tabpanel');
+      panel.setAttribute('aria-labelledby', tab.id);
+      // Panels hold long scrollable content, so they take focus themselves.
+      panel.setAttribute('tabindex', '0');
+    }
   }
-  for (const section of document.querySelectorAll('main > section')) {
-    section.hidden = section.id !== `tab-${name}`;
+
+  function select(name, { focus = false } = {}) {
+    for (const tab of tabs) {
+      const current = tab.dataset.tab === name;
+      tab.setAttribute('aria-selected', String(current));
+      // Roving tabindex: one stop for the whole group, arrows move within it.
+      tab.tabIndex = current ? 0 : -1;
+      const panel = panelFor(tab.dataset.tab);
+      if (panel) panel.hidden = !current;
+      if (current && focus) tab.focus();
+    }
   }
+
+  tablist.addEventListener('click', (event) => {
+    const tab = event.target.closest('button[data-tab]');
+    if (tab) select(tab.dataset.tab);
+  });
+
+  tablist.addEventListener('keydown', (event) => {
+    const index = tabs.indexOf(document.activeElement);
+    if (index < 0) return;
+    const moves = {
+      ArrowRight: index + 1, ArrowLeft: index - 1,
+      Home: 0, End: tabs.length - 1,
+    };
+    if (!(event.key in moves)) return;
+    event.preventDefault();
+    const next = (moves[event.key] + tabs.length) % tabs.length;
+    select(tabs[next].dataset.tab, { focus: true });
+  });
+
+  select(tabs[0].dataset.tab);
 }
 
-document.querySelector('nav').addEventListener('click', (event) => {
-  const btn = event.target.closest('button[data-tab]');
-  if (btn) showTab(btn.dataset.tab);
-});
+setUpTabs();
 
 // --------------------------------------------------------------------- boot
 

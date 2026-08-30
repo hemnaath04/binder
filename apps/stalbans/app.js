@@ -120,7 +120,16 @@ export function renderAppointments() {
           <p class="meta">${esc(a.location)}</p>
           ${a.status === 'reschedule_requested'
             ? '<p><span class="tag">reschedule requested</span></p>'
-            : `<p><button type="button" data-reschedule="${esc(a.id)}">Ask to reschedule</button></p>`}
+            : `<p><button type="button" data-reschedule="${esc(a.id)}">Ask to reschedule</button></p>
+               <form class="reschedule-form" data-appointment="${esc(a.id)}" hidden>
+                 <label for="why-${esc(a.id)}">Why does this need to move? (optional)</label>
+                 <textarea id="why-${esc(a.id)}" rows="2"></textarea>
+                 <p class="form-error" role="alert" hidden></p>
+                 <p class="row">
+                   <button type="submit">Send request</button>
+                   <button type="button" class="secondary" data-cancel-reschedule>Cancel</button>
+                 </p>
+               </form>`}
         </div>`).join('')
     : '<p class="empty">No upcoming visits.</p>';
 }
@@ -165,30 +174,124 @@ export function requestReschedule({ appointmentId, reason }) {
   return appt;
 }
 
+/**
+ * Reschedule is a small inline form rather than a window.prompt.
+ *
+ * A prompt cannot be labelled or styled, gives a screen reader no context about
+ * what is being asked or which appointment it concerns, and blocks the page. An
+ * inline disclosure keeps the appointment visible while the reason is typed.
+ */
 document.addEventListener('click', (event) => {
-  const btn = event.target.closest('button[data-reschedule]');
-  if (!btn) return;
-  const reason = window.prompt('Why does this need to move? (optional)') ?? '';
-  try {
-    requestReschedule({ appointmentId: btn.dataset.reschedule, reason });
-  } catch (error) {
-    window.alert(error.message);
+  const open = event.target.closest('button[data-reschedule]');
+  if (open) {
+    const card = open.closest('.card');
+    const form = card.querySelector('.reschedule-form');
+    form.hidden = false;
+    open.hidden = true;
+    form.querySelector('textarea').focus();
+    return;
+  }
+
+  const cancel = event.target.closest('button[data-cancel-reschedule]');
+  if (cancel) {
+    const card = cancel.closest('.card');
+    card.querySelector('.reschedule-form').hidden = true;
+    const trigger = card.querySelector('button[data-reschedule]');
+    trigger.hidden = false;
+    trigger.focus();
   }
 });
 
-function showTab(name) {
-  for (const btn of document.querySelectorAll('nav button')) {
-    btn.setAttribute('aria-selected', String(btn.dataset.tab === name));
+document.addEventListener('submit', (event) => {
+  const form = event.target.closest('.reschedule-form');
+  if (!form) return;
+  event.preventDefault();
+  const error = form.querySelector('.form-error');
+  error.hidden = true;
+  try {
+    requestReschedule({
+      appointmentId: form.dataset.appointment,
+      reason: form.querySelector('textarea').value,
+    });
+  } catch (err) {
+    error.textContent = err.message;
+    error.hidden = false;
+    form.querySelector('textarea').focus();
   }
-  for (const section of document.querySelectorAll('main > section')) {
-    section.hidden = section.id !== `tab-${name}`;
+});
+
+/**
+ * Tabs, following the ARIA authoring practices.
+ *
+ * The roles are applied here rather than in the markup because the widget only
+ * exists once this script runs. Without JavaScript these are ordinary buttons
+ * and every panel is visible, which is a worse layout but not a broken page.
+ *
+ * The previous version put `aria-selected` on plain buttons. That attribute is
+ * only meaningful on a `tab`, `option`, `row` or `gridcell`, so a screen reader
+ * announced five buttons with no indication of which one was current, and
+ * arrow keys did nothing.
+ */
+function setUpTabs() {
+  const tablist = document.querySelector('nav');
+  if (!tablist) return;
+
+  const tabs = [...tablist.querySelectorAll('button[data-tab]')];
+  if (!tabs.length) return;
+
+  tablist.setAttribute('role', 'tablist');
+
+  const panelFor = (name) => document.getElementById(`tab-${name}`);
+
+  for (const tab of tabs) {
+    const name = tab.dataset.tab;
+    const panel = panelFor(name);
+    tab.id = `tabbtn-${name}`;
+    tab.setAttribute('role', 'tab');
+    tab.setAttribute('type', 'button');
+    if (panel) {
+      tab.setAttribute('aria-controls', panel.id);
+      panel.setAttribute('role', 'tabpanel');
+      panel.setAttribute('aria-labelledby', tab.id);
+      // Panels hold long scrollable content, so they take focus themselves.
+      panel.setAttribute('tabindex', '0');
+    }
   }
+
+  function select(name, { focus = false } = {}) {
+    for (const tab of tabs) {
+      const current = tab.dataset.tab === name;
+      tab.setAttribute('aria-selected', String(current));
+      // Roving tabindex: one stop for the whole group, arrows move within it.
+      tab.tabIndex = current ? 0 : -1;
+      const panel = panelFor(tab.dataset.tab);
+      if (panel) panel.hidden = !current;
+      if (current && focus) tab.focus();
+    }
+  }
+
+  tablist.addEventListener('click', (event) => {
+    const tab = event.target.closest('button[data-tab]');
+    if (tab) select(tab.dataset.tab);
+  });
+
+  tablist.addEventListener('keydown', (event) => {
+    const index = tabs.indexOf(document.activeElement);
+    if (index < 0) return;
+    const moves = {
+      ArrowRight: index + 1, ArrowLeft: index - 1,
+      Home: 0, End: tabs.length - 1,
+    };
+    if (!(event.key in moves)) return;
+    event.preventDefault();
+    const next = (moves[event.key] + tabs.length) % tabs.length;
+    select(tabs[next].dataset.tab, { focus: true });
+  });
+
+  select(tabs[0].dataset.tab);
 }
 
-document.querySelector('nav').addEventListener('click', (event) => {
-  const btn = event.target.closest('button[data-tab]');
-  if (btn) showTab(btn.dataset.tab);
-});
+setUpTabs();
 
 renderPatient();
 renderTrends();

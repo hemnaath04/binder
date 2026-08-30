@@ -39,7 +39,7 @@ She is also the only person who can see all three at once. In this fixture that 
 | Spironolactone from *two* prescribers | **Wellspring only.** Neither practice knows the other wrote for it |
 | Potassium 5.4 and rising, eGFR 31 and falling | **St. Albans only.** The cardiologist who added spironolactone cannot see either |
 
-No single screen in this repository shows a problem. The union of three screens shows two.
+No single screen in this repository shows a problem. The union of four screens shows several.
 
 ## Why this had to be WebMCP
 
@@ -49,7 +49,7 @@ The only place all three sessions coexist is the caregiver's own browser, under 
 
 ## Architecture
 
-Four independent origins. The host is a **broker**: it discovers tools published by origins that have no relationship with each other, runs them through its own in-page agent, and re-registers a curated subset as its own tools so a browser agent sees one coherent list instead of three disconnected sites.
+Five independent origins, four portals and a host. The host is a **broker**: it discovers tools published by origins that have no relationship with each other, runs them through its own in-page agent, and re-registers a curated subset as its own tools so a browser agent sees one coherent list instead of four disconnected sites.
 
 ```
 binder.<host>                      host, top-level document
