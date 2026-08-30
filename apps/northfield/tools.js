@@ -52,7 +52,7 @@ async function register() {
 
   const opts = { exposedTo: BINDER_ORIGINS };
 
-  await mc.registerTool({
+  await document.modelContext.registerTool({
     name: 'northfield_list_meds',
     description:
       'List the medications Northfield Cardiology has prescribed for this patient, with strength, ' +

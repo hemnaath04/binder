@@ -22,7 +22,7 @@ All five return 200 publicly and send `Origin-Agent-Cluster: ?1`. Verified on pr
 
 | Repo | Branch state | Visibility |
 | --- | --- | --- |
-| `hemnaath04/binder` | `dev` = `fad958d`, `main` = `9460334` (behind) | **private, must go public** |
+| `hemnaath04/binder` | `main` and `dev` level | **public, MIT detected** |
 | `hemnaath04/webmcp-binder-plan` | `dev` = `758c4a8` | private, stays private |
 
 ```
@@ -38,17 +38,14 @@ Federation proof (13 checks), four portals, the host, the reconciliation engine,
 
 1. **Devpost text description.** Blank. Must answer four prompts, in this order: why this use case fits WebMCP; how it creates a better user experience; what people and agents can do together that was difficult or impossible before; how WebMCP was implemented.
 2. **Demo video.** Under 3 minutes, public on YouTube, with spoken audio, showing the project working and naming how WebMCP was used. **Hemnaath is recording this himself.**
-3. **The repo is private.** It must be public with the MIT licence detectable in the About sidebar or the entry is void:
-   ```
-   gh repo edit hemnaath04/binder --visibility public --accept-visibility-change-consequences
-   ```
+3. ~~The repo is private.~~ **Done 2026-08-30.** Public, MIT detected by GitHub, readable signed out, `main` merged level with `dev` via PR #2, all 13 commits dated after 2026-08-25.
 4. **Devpost form is at 1 of 5 steps.** Project name is set to "Binder". Elevator pitch drafted but not pasted:
    > Your dad's doctors can't see each other's records. Binder reads all his patient portals in your browser and tells you what to ask at the next appointment.
 5. **Thumbnail** is still the Devpost placeholder. Hemnaath wants to wait for a polished UI screenshot.
 
 ### Deliberately left for Hemnaath
 
-Flipping the repo public and submitting are outward-facing and irreversible enough that they are his calls, and he said he wants to submit once the project is done. Do not do either without him.
+Submitting is his call and he said he wants to do it once the project is done. Do not submit without him. He made the repo public himself on 2026-08-30.
 
 ---
 

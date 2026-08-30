@@ -45,7 +45,7 @@ async function register() {
 
   const opts = { exposedTo: BINDER_ORIGINS };
 
-  await mc.registerTool({
+  await document.modelContext.registerTool({
     name: 'corbin_read_discharge',
     description:
       'Read the discharge summary from the hospital stay that started this patient’s cardiac and ' +

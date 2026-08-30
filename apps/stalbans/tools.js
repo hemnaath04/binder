@@ -36,7 +36,7 @@ async function register() {
 
   const opts = { exposedTo: BINDER_ORIGINS };
 
-  await mc.registerTool({
+  await document.modelContext.registerTool({
     name: 'stalbans_list_meds',
     description:
       'List the medications St. Albans Kidney Care has prescribed, with strength, instructions, ' +

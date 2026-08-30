@@ -39,7 +39,7 @@ async function register() {
 
   const opts = { exposedTo: BINDER_ORIGINS };
 
-  await mc.registerTool({
+  await document.modelContext.registerTool({
     name: 'wellspring_list_rx',
     description:
       'List active prescriptions on file at Wellspring Pharmacy, with drug, strength, prescriber, ' +
