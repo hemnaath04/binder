@@ -168,3 +168,13 @@ test('refill gaps from one prescriber merge into a single task', () => {
   assert.match(refills[0].title, /2 medicines/);
   assert.equal(refills[0].evidence.length, 2, 'both drugs should still be listed as evidence');
 });
+
+test('repeated purchases of one item collapse into a single evidence row', () => {
+  // Three ibuprofen purchases produced three rows saying the same thing on
+  // three dates. The pattern is the point, not the repetition.
+  const tw = findCareConflicts(SOURCES).find((f) => f.id === 'triple-whammy');
+  const ibuprofen = tw.evidence.filter((e) => /ibuprofen/i.test(e.detail));
+  assert.equal(ibuprofen.length, 1, 'ibuprofen should appear once, not once per purchase');
+  assert.match(ibuprofen[0].detail, /3 times between/);
+  assert.match(ibuprofen[0].detail, /no prescription/);
+});
