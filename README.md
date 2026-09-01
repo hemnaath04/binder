@@ -23,6 +23,42 @@ No login. Open Binder and it works immediately.
 
 > **Not a medical device, and not medical advice.** Binder reconciles information a caregiver already has access to and produces *questions to ask a clinician*. It does not diagnose and does not recommend treatment. All data in this repository is fabricated. See [DISCLAIMER.md](./DISCLAIMER.md).
 
+## See it work in three minutes
+
+A scripted path, because the interesting parts are not the first thing you would click.
+
+**Setup, once.** In Chrome 149 or newer, set `chrome://flags/#enable-webmcp-testing` to Enabled and relaunch. Install the [Model Context Tool Inspector](https://chromewebstore.google.com/detail/model-context-tool-inspec/gbpdfapgefenggkahomfgkhfehlcenpd) extension, which lists the registered tools and lets you call them in natural language.
+
+**Before anything else, check the header.** Under the title it should read `4 sources connected` and `live portal read`. That means Binder is reading the four portals cross-origin right now. If it says `saved copy`, this browser could not federate and Binder is serving its last successful read, which is the documented fallback and still fully functional.
+
+### Without an agent
+
+The product has to stand on its own, so start here.
+
+1. **What to ask** lists seven findings. Open **Three medicines together that are known to strain the kidneys** and expand **Why Binder is showing this, from 3 sources**.
+2. Read the evidence rows. One of them is ibuprofen, `bought at the counter 3 times between June 30, 2026 and August 19, 2026, no prescription`. Nobody prescribed it, so it appears in no clinical record anywhere, and it is not a one-off.
+3. Note the **Ask** box. The output is a question for a clinician, with its evidence, never a diagnosis.
+4. Now open the four portals in the table above and look for that finding. **It is not on any of them.** Cardiology has the blood pressure medicine and the diuretic. Only the pharmacy has the ibuprofen. Only nephrology has the falling kidney function that makes the combination matter. The finding exists only in the union.
+
+### With an agent
+
+Open the Tool Inspector. It shows the nine tools Binder publishes. Ask, in order:
+
+| Ask it | What should happen |
+| --- | --- |
+| *Is there anything I should be worried about?* | calls `find_care_conflicts`, returns seven |
+| *How do you know that? Show me where it came from.* | calls `explain_care_conflict`, returns the evidence and two citations |
+| *He is nearly out of the sevelamer, can you get that refilled?* | calls `stage_refill_request`, returns **pending**. Nothing was sent |
+| *Actually refill his spironolactone too.* | **refuses to guess.** Names both prescriptions and both prescribers |
+
+That last one is worth doing. Spironolactone is on two prescriptions from two doctors who do not know about each other, so the refill tool runs into the duplicate on its own rather than being told about it.
+
+### The gate
+
+Open **Waiting for you**. The staged refill is there with a before and after card naming the change, the pharmacy it goes to, and the tool that asked. Press **Approve and send**, then open Wellspring and see it landed.
+
+There is no tool that can press that button, and `evals/run.mjs` fails the build if one ever appears.
+
 ## The problem
 
 Rui Duarte is 74. After a hospitalization he sees a cardiologist at one health system, a nephrologist at another, and fills prescriptions at a pharmacy chain. Three portals, three logins, three medication lists that disagree.

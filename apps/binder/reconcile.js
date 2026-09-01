@@ -107,6 +107,36 @@ function findByClass(sources, cls) {
   return hits;
 }
 
+/**
+ * Collapse repeated purchases of the same item into one row.
+ *
+ * Three ibuprofen purchases produced three evidence rows saying the same
+ * thing on three different dates. Repetition reads as padding, and the
+ * pattern is the point: buying it three times in two months is what makes it
+ * a standing exposure rather than a one-off.
+ */
+function summarisePurchases(hits) {
+  const groups = new Map();
+  const rows = [];
+  for (const hit of hits) {
+    if (hit.kind !== 'purchase') {
+      rows.push({ source: hit.source.name, detail: `${hit.name} ${hit.strength ?? ''}`.trim() });
+      continue;
+    }
+    const key = `${hit.source.name}|${hit.name}`;
+    if (!groups.has(key)) groups.set(key, { name: hit.name, source: hit.source.name, dates: [] });
+    groups.get(key).dates.push(hit.date);
+  }
+  for (const g of groups.values()) {
+    const dates = g.dates.sort();
+    const times = dates.length === 1
+      ? `on ${humanDate(dates[0])}`
+      : `${dates.length} times between ${humanDate(dates[0])} and ${humanDate(dates[dates.length - 1])}`;
+    rows.push({ source: g.source, detail: `${g.name}, bought at the counter ${times}, no prescription` });
+  }
+  return rows;
+}
+
 // -------------------------------------------------------------------- labs
 
 /** Latest reading of an analyte across all sources, newest wins. */
@@ -205,12 +235,7 @@ const RULES = [
     const evidence = [
       ...raas.map((h) => ({ source: h.source.name, detail: `${h.name} ${h.strength ?? ''}, ${labelFor('raas_inhibitor')}`.trim() })),
       ...diuretics.map((h) => ({ source: h.source.name, detail: `${h.name} ${h.strength ?? ''}, ${labelFor('diuretic')}`.trim() })),
-      ...nsaids.map((h) => ({
-        source: h.source.name,
-        detail: h.kind === 'purchase'
-          ? `${h.name}, bought at the counter on ${humanDate(h.date)}, no prescription`
-          : `${h.name} ${h.strength ?? ''}`.trim(),
-      })),
+      ...summarisePurchases(nsaids),
     ];
 
     return [{
